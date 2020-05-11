@@ -47,16 +47,16 @@ public class LoginActivity extends AppCompatActivity {
             finish();
         }
         // Configure Google Sign In, api값과 요청할 값이 저장되어 있음
-        /*GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
-        mGoogleSigninClient = GoogleSignIn.getClient(this, gso); */
+        mGoogleSigninClient = GoogleSignIn.getClient(this, gso);
 
 
         findViewById(R.id.logInButton).setOnClickListener(onClickListener);
+        findViewById(R.id.gotoSignUpButton).setOnClickListener(onClickListener);
         findViewById(R.id.GoogleLogInButton).setOnClickListener(onClickListener);
-
 
         et_email = findViewById(R.id.emailEditText);
         et_password = findViewById(R.id.passwordEditText);
@@ -70,6 +70,10 @@ public class LoginActivity extends AppCompatActivity {
                     signIn_Email();
                     break;
 
+                case R.id.gotoSignUpButton:
+                    startSignUpActivity();
+                    break;
+
                 case R.id.GoogleLogInButton:
                     Google_logIn();
                     break;
@@ -80,6 +84,11 @@ public class LoginActivity extends AppCompatActivity {
             }
         }
     };
+
+    private void startSignUpActivity() {
+        Intent intent = new Intent(this, SignUpActivity.class);
+        startActivity(intent);
+    }
 
     private void startMainActivity() {
         Intent intent = new Intent(this, MainActivity.class);
@@ -181,6 +190,14 @@ public class LoginActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        moveTaskToBack(true);
+        android.os.Process.killProcess(android.os.Process.myPid());
+        System.exit(1);
     }
 
     @Override

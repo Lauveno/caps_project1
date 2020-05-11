@@ -18,7 +18,7 @@
     <LinearLayout
         android:id="@+id/signup_layout"
         android:layout_width="match_parent"
-        android:layout_height="580dp"
+        android:layout_height="400dp"
         android:layout_alignParentBottom="true"
         android:orientation="vertical">
 
@@ -61,7 +61,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
-            android:layout_marginBottom="25dp">
+            android:layout_marginBottom="10dp">
 
             <EditText
                 android:id="@+id/passwordCheckEditText"
@@ -73,7 +73,7 @@
                 android:autofillHints="@string/password_check" />
         </com.google.android.material.textfield.TextInputLayout>
 
-<!--        <com.google.android.material.textfield.TextInputLayout
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
@@ -95,7 +95,7 @@
             android:layout_gravity="center"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
-            android:layout_marginBottom="25dp">
+            android:layout_marginBottom="10dp">
 
             <EditText
                 android:id="@+id/phoneEditText"
@@ -107,37 +107,16 @@
                 android:autofillHints="@string/phone" />
 
         </com.google.android.material.textfield.TextInputLayout>
--->
+
         <Button
             android:id="@+id/signUpButton"
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
-            android:layout_marginBottom="50dp"
             android:background="@color/colorGray"
             android:text="@string/signup"
             android:theme="@style/ButtonStyle" />
 
-        <Button
-            android:id="@+id/gotoLoginButton"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_marginBottom="20dp"
-            android:background="@color/colorMint"
-            android:text="@string/email_login"
-            android:theme="@style/ButtonStyle" />
-
-        <Button
-            android:id="@+id/GoogleLogInButton"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:background="@drawable/btn_signin_google"
-            android:text="@string/google_login"
-            android:textColor="#FFFFFF" />
     </LinearLayout>
 </RelativeLayout>
