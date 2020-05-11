@@ -6,5 +6,7 @@
     <color name="colorPrimaryDark">#3700B3</color>
     <color name="colorAccent">#03DAC5</color>
     <color name="colorMint">#AAF0D1</color>
+    <color name="colorIndigo">#5c7cfa</color>
+    <color name="colorIndigo2">#bac8ff</color>
     <color name="colorWhite">#FFFFFF</color>
 </resources>
