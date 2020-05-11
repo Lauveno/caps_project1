@@ -7,4 +7,10 @@
     <color name="colorAccent">#03DAC5</color>
     <color name="colorMint">#AAF0D1</color>
     <color name="colorWhite">#FFFFFF</color>
+
+    <!-- mypage -->
+    <color name="gray0">#f8f9fa</color>
+    <color name="gray1">#f1f3f5</color>
+    <color name="gray2">#e9ecef</color>
+
 </resources>
