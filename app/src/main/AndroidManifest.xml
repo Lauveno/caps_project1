@@ -31,10 +31,6 @@
                 />
         </provider>
 
-        <activity android:name=".MypageActivity" />
-        <activity android:name=".NewsActivity" />
-        <activity android:name=".MapActivity" />
-        <activity android:name=".BoardActivity" />
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyA0o3-3EtVdOxp5IYtqw2Bqdpc4l8kUcZY" />
