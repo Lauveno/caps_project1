@@ -31,10 +31,6 @@ public class MypageActivity extends Fragment {
     private ImageView iv_profile;
     private int id_view;
 
-
-
-
-
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -47,7 +43,6 @@ public class MypageActivity extends Fragment {
     public MypageActivity() {
         // Required empty public constructor
     }
-
 
     // TODO: Rename and change types and number of parameters
     public static MypageActivity newInstance(String param1, String param2) {
@@ -93,11 +88,11 @@ public class MypageActivity extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
+/*
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 
 
         }
-
+*/
     }
 }
