@@ -44,7 +44,7 @@
             android:textStyle="bold" />
 
         <Button
-            android:id="@+id/LogoutButton"
+            android:id="@+id/logoutButton"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"

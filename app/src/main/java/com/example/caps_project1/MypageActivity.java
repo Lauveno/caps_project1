@@ -1,6 +1,7 @@
 package com.example.caps_project1;
 
 import android.Manifest;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -8,11 +9,15 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import android.text.LoginFilter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.annotations.NotNull;
 
 
 /**
@@ -61,6 +66,9 @@ public class MypageActivity extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        if(FirebaseAuth.getInstance().getCurrentUser() == null){
+            startLoginActivity();
+        }
     }
 
     // onCreate : fragment가 생성될 때 호출되는 부분
@@ -72,12 +80,24 @@ public class MypageActivity extends Fragment {
         View view = inflater.inflate(R.layout.activity_mypage, container, false);
 
         iv_profile = view.findViewById(R.id.iv_profile);
+
+        // 프로필
         Button btn_uploadPicture = view.findViewById(R.id.btn_uploadPicture);
         btn_uploadPicture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
 
+            }
+        });
+
+        // 로그아웃
+        Button logoutButton = view.findViewById(R.id.logoutButton);
+        logoutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FirebaseAuth.getInstance().signOut();
+                startLoginActivity();
             }
         });
 
@@ -91,8 +111,12 @@ public class MypageActivity extends Fragment {
 /*
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 
-
         }
 */
+    }
+
+    private void startLoginActivity() {
+        Intent intent = new Intent(getActivity(), LoginActivity.class);
+        startActivity(intent);
     }
 }
