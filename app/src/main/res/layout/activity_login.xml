@@ -64,7 +64,8 @@
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:layout_marginBottom="5dp"
-            android:background="@color/colorMint"
+            android:background="@color/colorIndigo"
+            android:textColor="@color/colorWhite"
             android:text="@string/signin"
             android:theme="@style/ButtonStyle" />
 
@@ -86,7 +87,7 @@
             android:layout_height="40dp"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
-            android:background="@color/colorGray"
+            android:background="@color/colorIndigo2"
             android:text="@string/signup"
             android:theme="@style/ButtonStyle" />
 
