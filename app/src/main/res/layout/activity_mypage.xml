@@ -19,11 +19,15 @@
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:src="@drawable/user" />
+
         <Button
             android:id="@+id/btn_uploadPicture"
             android:layout_width="200dp"
-            android:layout_height="30dp"
-            android:layout_gravity="center" />
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+
+
+            android:text="프로필 설정" />
     </LinearLayout>
 
     <LinearLayout
