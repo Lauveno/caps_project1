@@ -1,10 +1,14 @@
 package com.example.caps_project1;
 
 import android.Manifest;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+
+import android.content.Intent;
+
 import android.os.Build;
 import android.os.Bundle;
 
@@ -17,6 +21,7 @@ import androidx.fragment.app.Fragment;
 
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.text.LoginFilter;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -31,6 +36,8 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.annotations.NotNull;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -73,7 +80,6 @@ public class MypageActivity extends Fragment {
         // Required empty public constructor
     }
 
-
     // TODO: Rename and change types and number of parameters
     public static MypageActivity newInstance(String param1, String param2) {
         MypageActivity fragment = new MypageActivity();
@@ -96,6 +102,9 @@ public class MypageActivity extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        if(FirebaseAuth.getInstance().getCurrentUser() == null){
+            startLoginActivity();
+        }
     }
 
     // onCreate : fragment가 생성될 때 호출되는 부분
@@ -108,6 +117,8 @@ public class MypageActivity extends Fragment {
         thiscontext = container.getContext();
 
         iv_profile = view.findViewById(R.id.iv_profile);
+
+        // 프로필
         Button btn_uploadPicture = view.findViewById(R.id.btn_uploadPicture);
 
         btn_uploadPicture.setOnClickListener(new View.OnClickListener() {
@@ -147,6 +158,16 @@ public class MypageActivity extends Fragment {
                     }
                 });
                 pop.show();
+            }
+        });
+
+        // 로그아웃
+        Button logoutButton = view.findViewById(R.id.logoutButton);
+        logoutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FirebaseAuth.getInstance().signOut();
+                startLoginActivity();
             }
         });
 
@@ -245,15 +266,8 @@ public class MypageActivity extends Fragment {
         Toast.makeText(thiscontext, "앨범에 저장되었습니다", Toast.LENGTH_SHORT).show();
     }
 
-    // onActivityCreated : 프래그먼트 생성 후 호출하는 함수
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-
-
-        }
-
+    private void startLoginActivity() {
+        Intent intent = new Intent(getActivity(), LoginActivity.class);
+        startActivity(intent);
     }
 }

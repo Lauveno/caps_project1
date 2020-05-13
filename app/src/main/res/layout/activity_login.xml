@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/colorWhite"
     android:id="@+id/layout_login"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/colorWhite"
     tools:context=".LoginActivity">
 
     <ImageView
-        android:layout_above="@+id/signin_layout"
-        android:layout_alignParentTop="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:src="@drawable/main_logo2"
-        android:contentDescription="@string/app_name" />
+        android:layout_above="@+id/signin_layout"
+        android:layout_alignParentTop="true"
+        android:contentDescription="@string/app_name"
+        android:src="@drawable/main_logo2" />
 
     <LinearLayout
         android:id="@+id/signin_layout"
         android:layout_width="match_parent"
-        android:layout_height="350dp"
+        android:layout_height="330dp"
         android:layout_alignParentBottom="true"
         android:orientation="vertical">
 
@@ -33,10 +33,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
+                android:autofillHints="@string/email"
                 android:ems="10"
                 android:hint="@string/email"
-                android:inputType="textEmailAddress"
-                android:autofillHints="@string/email" />
+                android:inputType="textEmailAddress" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -50,10 +50,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="30dp"
+                android:autofillHints="@string/password"
                 android:ems="10"
                 android:hint="@string/password"
-                android:inputType="textPassword"
-                android:autofillHints="@string/password" />
+                android:inputType="textPassword" />
         </com.google.android.material.textfield.TextInputLayout>
 
 
@@ -64,21 +64,22 @@
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:layout_marginBottom="5dp"
-            android:background="@color/colorMint"
+            android:background="@color/colorIndigo"
             android:text="@string/signin"
+            android:textColor="@color/colorWhite"
             android:theme="@style/ButtonStyle" />
 
         <Button
             android:id="@+id/GoogleLogInButton"
-            android:text="@string/google_login"
-            android:textColor="#FFFFFF"
-            android:background="@drawable/btn_signin_google"
             android:layout_width="match_parent"
             android:layout_height="40dp"
-            android:layout_marginTop="15dp"
             android:layout_marginLeft="20dp"
+            android:layout_marginTop="15dp"
             android:layout_marginRight="20dp"
-            android:layout_marginBottom="15dp"/>
+            android:layout_marginBottom="15dp"
+            android:background="@drawable/btn_signin_google"
+            android:text="@string/google_login"
+            android:textColor="#FFFFFF" />
 
         <Button
             android:id="@+id/gotoSignUpButton"
@@ -86,7 +87,7 @@
             android:layout_height="40dp"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
-            android:background="@color/colorGray"
+            android:background="@color/colorIndigo2"
             android:text="@string/signup"
             android:theme="@style/ButtonStyle" />
 
