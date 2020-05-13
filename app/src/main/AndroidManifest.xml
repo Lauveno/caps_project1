@@ -22,16 +22,8 @@
         android:theme="@style/AppTheme">
 
 
-        <provider
-            android:authorities="com.example.caps_project1"
-            android:name="androidx.core.content.FileProvider"
-            android:exported="false"
-            android:grantUriPermissions="true">
-            <meta-data
-                android:name="android:support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_path" />
-        </provider>
-       <meta-data
+
+        <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyA0o3-3EtVdOxp5IYtqw2Bqdpc4l8kUcZY" />
 
