@@ -22,7 +22,7 @@
         android:theme="@style/AppTheme">
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyA0o3-3EtVdOxp5IYtqw2Bqdpc4l8kUcZY" /
+            android:value="AIzaSyA0o3-3EtVdOxp5IYtqw2Bqdpc4l8kUcZY" />
 
         <activity android:name=".LoginActivity">
             <intent-filter>
