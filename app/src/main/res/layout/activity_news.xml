@@ -1,18 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".NewsActivity">
+    tools:context=".NewsActivity"
+    android:orientation="horizontal">
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:text="This is news page"
-        android:id="@+id/news"
-        android:maxLines="100"
-        android:scrollbars="vertical"
-        />
 
-</FrameLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:background="@drawable/border"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/news"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxLines="100"
+            android:text="This is news page" />
+
+        <Button
+            android:id="@+id/getBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="150dp"
+            android:layout_marginTop="10dp"
+            android:text="Get Website" />
+    </LinearLayout>
+</LinearLayout>
