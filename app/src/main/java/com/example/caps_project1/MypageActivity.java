@@ -48,6 +48,7 @@ import com.google.firebase.database.annotations.NotNull;
 // 프래그먼트 생명주기 : onAttach() onCreate() onViewCreated()
 // onActivityCreated() onResume()
 public class MypageActivity extends Fragment {
+    private FirebaseAuth mAuth;
 
     private static final int PERMISSON_CAMERA = 1111;
     private static final int TAKE_PHOTO = 2222;
