@@ -10,4 +10,8 @@
         android:id="@+id/two"
         android:title="GALLERY">
     </item>
+    <item
+        android:id="@+id/three"
+        android:title="BASIC">
+    </item>
 </menu>

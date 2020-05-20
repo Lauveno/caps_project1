@@ -32,7 +32,7 @@ public class NewsActivity extends Fragment {
     private String htmlContentInStringFormat=""; //추가_
     private FragmentActivity mContext;
     private Context context;
-    private RecyclerAdapter adapter;
+//    private RecyclerAdapter adapter;
     RecyclerView recyclerView;
 
 
