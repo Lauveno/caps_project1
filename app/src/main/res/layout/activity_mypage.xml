@@ -32,7 +32,7 @@
 <!--                android:id="@+id/btn_uploadPicture"-->
 <!--                android:layout_width="30dp"-->
 <!--                android:layout_height="30dp"-->
-<!--                android:layout_gravity="center"-->
+<!--                android:layo0ut_gravity="center"-->
 <!--                android:background="@drawable/plus"-->
 <!--                android:stateListAnimator="@null" />-->
 
@@ -146,5 +146,6 @@
             android:stateListAnimator="@null"
             android:text="회원탈퇴" />
     </LinearLayout>
+
 
 </LinearLayout>
