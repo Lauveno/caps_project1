@@ -7,6 +7,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -20,6 +22,7 @@ import androidx.fragment.app.Fragment;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.provider.Settings;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -36,6 +39,7 @@ import com.google.firebase.auth.FirebaseAuth;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -43,6 +47,7 @@ import java.util.Date;
 public class fragment_mypage_1 extends Fragment {
     private FirebaseAuth mAuth;
 
+    private static final int REQUEST_CODE = 101;
     private static final int PERMISSON_CAMERA = 1111;
     private static final int TAKE_PHOTO = 2222;
     private static final int TAKE_ALBUM = 3333;
@@ -77,6 +82,10 @@ public class fragment_mypage_1 extends Fragment {
         mContext = context;
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
 
     // onCreate : fragment가 생성될 때 호출되는 부분
     // onCreateView : onCreate 후에 화면을 구성할 때 호출
@@ -90,42 +99,59 @@ public class fragment_mypage_1 extends Fragment {
         iv_profile = view.findViewById(R.id.iv_profile);
 
         // 이미지를 클릭 시 팝업메뉴가 먼저 나온다.
-        iv_profile.setOnClickListener(new View.OnClickListener() {
+//        iv_profile.setOnClickListener(new View.OnClickListener() {
+//
+//            // popup menu 생성
+//            // inflater 를 통해 popup menu를 구현, 어떤 메뉴를 선택하는지에 따라서 결과 값이 달라진다.
+//            // 카메라, 갤러리 직접 접근하는 내부 함수 만들기
+//            @Override
+//            public void onClick(View v) {
+//
+//                PopupMenu pop = new PopupMenu(mContext, v);
+//                pop.getMenuInflater().inflate(R.menu.menu_popup, pop.getMenu());
+//
+//                pop.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+//                    @Override
+//                    public boolean onMenuItemClick(MenuItem item) {
+//                        switch (item.getItemId()) {
+//                            // 카메라
+//                            case R.id.one:
+//                                captureCamera();
+//                                break;
+//
+//                            // 갤러리에서 권한 받아오기
+//                            case R.id.two:
+//                                getAlbum();
+//                                break;
+//
+//                            // 기본 이미지로 변경
+//                            case R.id.three:
+//                                iv_profile.setImageResource(R.drawable.user2);
+//                        }
+//                        return true;
+//                    }
+//                });
+//                pop.show();
+//                checkPermission();
+//            }
+//        });
 
-            // popup menu 생성
-            // inflater 를 통해 popup menu를 구현, 어떤 메뉴를 선택하는지에 따라서 결과 값이 달라진다.
-            // 카메라, 갤러리 직접 접근하는 내부 함수 만들기
+        iv_profile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                PopupMenu pop = new PopupMenu(mContext, v);
-                pop.getMenuInflater().inflate(R.menu.menu_popup, pop.getMenu());
-
-                pop.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
-                        switch (item.getItemId()) {
-                            // 카메라
-                            case R.id.one:
-                                captureCamera();
-                                break;
-
-                            // 갤러리에서 권한 받아오기
-                            case R.id.two:
-                                getAlbum();
-                                break;
-
-                            // 기본 이미지로 변경
-                            case R.id.three:
-                                iv_profile.setImageResource(R.drawable.user2);
-                        }
-                        return true;
-                    }
-                });
-                pop.show();
                 checkPermission();
+                Intent intent = new Intent();
+
+                // 구글 갤러리 접근
+                 intent.setType("image/*");
+
+                // 기기 기본 갤러리 접근
+//                intent.setType(MediaStore.Images.Media.CONTENT_TYPE);
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(intent, REQUEST_CODE);
             }
         });
+
 
         // 로그아웃
         Button logoutButton = view.findViewById(R.id.logoutButton);
@@ -205,30 +231,52 @@ public class fragment_mypage_1 extends Fragment {
     // ActivityCompat.checkSelfPermission : 카메라 및 외부 저장소 퍼미션 상태를 체크
     private void checkPermission() {
 
-        // 거부 : PackageManager.PERMISSION_DENIED 를 리턴한다.
-        if (ContextCompat.checkSelfPermission(mContext, Manifest.permission.WRITE_EXTERNAL_STORAGE) !=
-                PackageManager.PERMISSION_GRANTED) {
+        String temp = "";
 
-            if ((ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE)) ||
-                    (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.CAMERA))) {
-                new AlertDialog.Builder(mContext).setTitle("알림").setMessage("저장소 권한이 거부되었습니다.").setNeutralButton("설정", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int i) {
-                        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                        intent.setData(Uri.parse("package: " + getActivity().getPackageName()));
-                        startActivity(intent);
-                    }
-                }).setPositiveButton("확인", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int i) {
-                        getActivity().finish();
-                    }
-                }).setCancelable(false).create().show();
-            } else {
-                // 퍼미션 요청 , 요청결과는 onRequestPermissionResults 에서 수신
-                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA}, PERMISSON_CAMERA);
-            }
+        // 파일 읽기 권한
+        if (ContextCompat.checkSelfPermission(mContext,
+                Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            temp += Manifest.permission.READ_EXTERNAL_STORAGE + " ";
         }
+
+        // 파일 쓰기 권한
+        if (ContextCompat.checkSelfPermission(mContext,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            temp += Manifest.permission.WRITE_EXTERNAL_STORAGE + " ";
+        }
+
+        if (TextUtils.isEmpty(temp) == false) {
+            ActivityCompat.requestPermissions(getActivity(), temp.trim().split(" ", 1), 1);
+        } else {
+            Toast.makeText(mContext, "권한을 모두 허용", Toast.LENGTH_SHORT).show();
+        }
+
+
+        // 거부 : PackageManager.PERMISSION_DENIED 를 리턴한다.
+//        if (ContextCompat.checkSelfPermission(mContext, Manifest.permission.WRITE_EXTERNAL_STORAGE) !=
+//                PackageManager.PERMISSION_GRANTED) {
+//
+//            if ((ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE)) ||
+//                    (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.CAMERA))) {
+//                new AlertDialog.Builder(mContext).setTitle("알림").setMessage("저장소 권한이 거부되었습니다.").setNeutralButton("설정", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int i) {
+//                        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+//                        intent.setData(Uri.parse("package: " + getActivity().getPackageName()));
+//                        startActivity(intent);
+//                    }
+//                }).setPositiveButton("확인", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int i) {
+//                        getActivity().finish();
+//                    }
+//                }).setCancelable(false).create().show();
+//            } else {
+//                // 퍼미션 요청 , 요청결과는 onRequestPermissionResults 에서 수신
+//                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA}, PERMISSON_CAMERA);
+//            }
+//        }
+
 //        int permission = ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA);
 //        if (permission == PackageManager.PERMISSION_DENIED) {
 //            ActivityCompat.requestPermissions(getActivity(), new String[] {Manifest.permission.CAMERA}, 0);
@@ -241,71 +289,98 @@ public class fragment_mypage_1 extends Fragment {
 
 
     // ActivityCompat.requestPermissions 를 사용한 퍼미션 요청의 결과를 리턴받는 메소드
+    // 권한에 대한 응답이 있을 때 작동하는 함수
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == 0) {
-            if (grantResults[0] == 0) {
-                Toast.makeText(mContext, "카메라 권한 승인 완료", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(mContext, "카메라 권한 승인 거절", Toast.LENGTH_SHORT).show();
 
+        // 권한 허용
+        if (requestCode == 1) {
+            int length = permissions.length;
+            for(int i=0; i<length; i++) {
+                if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
+                    Log.d("maypage", "권한 허용 : " + permissions[i]);
             }
+        }
+//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+//        if (requestCode == 0) {
+//            if (grantResults[0] == 0) {
+//                Toast.makeText(mContext, "카메라 권한 승인 완료", Toast.LENGTH_SHORT).show();
+//            } else {
+//                Toast.makeText(mContext, "카메라 권한 승인 거절", Toast.LENGTH_SHORT).show();
+//
+//            }
         }
     }
 
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode) {
-            case TAKE_PHOTO:
-                if (requestCode == Activity.RESULT_OK) {
-                    try {
-                        Log.i("REQUEST_TAKE_PHOTO", "OK");
-                        galleryAddPic();
+//        super.onActivityResult(requestCode, resultCode, data);
 
-                        iv_profile.setImageURI(imageURI);
-                    } catch (Exception e) {
-                        Log.e("REQUEST_TAKE_PHOTO", e.toString());
-                    }
-                } else {
-                    Toast.makeText(mContext, "저장공간에 접근할 수 없습니다.", Toast.LENGTH_SHORT).show();
+        if (requestCode == REQUEST_CODE && requestCode == Activity.RESULT_OK) {
+
+                try {
+                    InputStream in = getActivity().getContentResolver().openInputStream(data.getData());
+
+                    Bitmap img = BitmapFactory.decodeStream(in);
+                    in.close();
+                    iv_profile.setImageBitmap(img);
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-                break;
-
-            case TAKE_ALBUM:
-                if (requestCode == Activity.RESULT_OK) {
-                    if (data.getData() != null) {
-                        try {
-                            File albumFile = null;
-                            albumFile = createImageFile();
-                            photoURI = data.getData();
-                            albumURI = Uri.fromFile(albumFile);
-                            cropImage();
-
-                        } catch (IOException e) {
-                            Log.e("TAKE_ALBUM_SINGLE_ERROR", e.toString());
-                        }
-                    }
-                }
-                break;
-
-            case CROP_IMAGE:
-                if (requestCode == Activity.RESULT_OK) {
-                    galleryAddPic();
-
-                    // 사진 변환 에러
-                    iv_profile.setImageURI(albumURI);
-                }
-                break;
+            } else if (requestCode == REQUEST_CODE  && requestCode == Activity.RESULT_CANCELED) {
+                Toast.makeText(mContext, "사진 선택 취소", Toast.LENGTH_SHORT).show();
+            }
         }
-    }
+//        switch (requestCode) {
+//            case TAKE_PHOTO:
+//                if (requestCode == Activity.RESULT_OK) {
+//                    try {
+//                        Log.i("REQUEST_TAKE_PHOTO", "OK");
+//                        galleryAddPic();
+//
+//                        iv_profile.setImageURI(imageURI);
+//                    } catch (Exception e) {
+//                        Log.e("REQUEST_TAKE_PHOTO", e.toString());
+//                    }
+//                } else {
+//                    Toast.makeText(mContext, "저장공간에 접근할 수 없습니다.", Toast.LENGTH_SHORT).show();
+//                }
+//                break;
+//
+//            case TAKE_ALBUM:
+//                if (requestCode == Activity.RESULT_OK) {
+//                    if (data.getData() != null) {
+//                        try {
+//                            File albumFile = null;
+//                            albumFile = createImageFile();
+//                            photoURI = data.getData();
+//                            albumURI = Uri.fromFile(albumFile);
+//                            cropImage();
+//
+//                        } catch (IOException e) {
+//                            Log.e("TAKE_ALBUM_SINGLE_ERROR", e.toString());
+//                        }
+//                    }
+//                }
+//                break;
+//
+//            case CROP_IMAGE:
+//                if (requestCode == Activity.RESULT_OK) {
+//                    galleryAddPic();
+//
+//                    // 사진 변환 에러
+//                    iv_profile.setImageURI(albumURI);
+//                }
+//                break;
+//        }
+//    }
 
     // 갤러리에 사진이 추가되고 선택할 수 있다.
     private void getAlbum() {
         Intent intent = new Intent(Intent.ACTION_PICK);
-        intent.setType("image/*");
+
+//        intent.setType("image/*");
         intent.setType(android.provider.MediaStore.Images.Media.CONTENT_TYPE);
 
         startActivityForResult(intent, TAKE_ALBUM);
@@ -387,5 +462,6 @@ public class fragment_mypage_1 extends Fragment {
         Intent intent = new Intent(getActivity(), LoginActivity.class);
         startActivity(intent);
     }
+
 
 }

@@ -1,14 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:gravity="center"
     tools:context=".fragment_mypage_3">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+<!--    <com.prolificinteractive.materialcalendarview.MaterialCalendarView-->
+<!--        android:id="@+id/calender"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        app:mcv_selectionColor="@color/gray2"-->
+<!--        app:mcv_showOtherDates="defaults" />-->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="fill_horizontal"
+        android:gravity="center"
+        android:orientation="vertical">
+        <DatePicker
+            android:id="@+id/datePicker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="5dp"/>
+    </LinearLayout>
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:orientation="vertical"
+        android:padding="5dp">
+        <TextView
+            android:id="@+id/viewDatePick"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#ced4da"
+            android:gravity="center"
+            android:text=""
+            android:textStyle="bold"
+            android:padding="5dp"/>
+        <EditText
+            android:id="@+id/editDiary"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:privateImeOptions="defaultInputmode=korean"
+            android:background="@color/gray1"
+            android:ems="10"
+            android:gravity="start|center_vertical"
+            android:inputType="text|textMultiLine|textCapSentences"
+            android:padding="7dp"
+            android:text="오늘의 일기" />
 
-</FrameLayout>
+        <Button
+            android:id="@+id/btn_save"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#ced4da"
+            android:text="저장" />
+    </LinearLayout>
+
+
+</LinearLayout>
