@@ -16,7 +16,6 @@ import android.widget.TextView;
 
 import org.jsoup.Jsoup;
 
-
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link NewsActivity#newInstance} factory method to
