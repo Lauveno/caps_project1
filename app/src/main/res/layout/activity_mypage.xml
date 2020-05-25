@@ -3,60 +3,73 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:background="#e9ecef"
     tools:context=".MypageActivity">
 
 
-    <LinearLayout
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/mypageTabLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/tabItem1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="내 정보"/>
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/tabItem2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="내 펫"/>
+
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/tabItem3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="다이어리"/>
+
+    </com.google.android.material.tabs.TabLayout>
+
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/viewpager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <FrameLayout
+        android:id="@+id/contents"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_gravity="center"
-        android:layout_margin="10dp"
-        android:background="@drawable/border">
+        app:layout_constraintTop_toBottomOf="@+id/mypageTabLayout">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center"
+            android:layout_margin="10dp"
+            android:background="@drawable/border">
 
 
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
 
-            <!-- 프로필 기본 사진 -->
-            <ImageView
-                android:id="@+id/iv_profile"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:src="@drawable/user" />
-
-<!--            <Button-->
-<!--                android:id="@+id/btn_uploadPicture"-->
-<!--                android:layout_width="30dp"-->
-<!--                android:layout_height="30dp"-->
-<!--                android:layo0ut_gravity="center"-->
-<!--                android:background="@drawable/plus"-->
-<!--                android:stateListAnimator="@null" />-->
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:layout_marginTop="10dp"
-                android:text="닉네임"
+                <ImageView
+                    android:id="@+id/iv_profile"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:src="@drawable/user" />
 
 
-                />
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="이메일"
-                android:layout_marginTop="50dp"
+            </RelativeLayout>
 
-                />
+        </LinearLayout>
 
-        </RelativeLayout>
+    </FrameLayout>
 
-    </LinearLayout>
+
 
     <LinearLayout
         android:layout_width="match_parent"

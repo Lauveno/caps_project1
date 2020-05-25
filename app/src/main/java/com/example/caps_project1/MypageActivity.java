@@ -22,6 +22,7 @@ import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.ViewPager;
 
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -44,17 +45,14 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.annotations.NotNull;
 
 import static androidx.core.app.ActivityCompat.finishAffinity;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link MypageActivity#newInstance} factory method to
- * create an instance of this fragment.
- */
+
 
 // 프래그먼트 생명주기 : onAttach() onCreate() onViewCreated()
 // onActivityCreated() onResume()
@@ -77,47 +75,15 @@ public class MypageActivity extends Fragment {
 
     private Context mContext;
 
+    ViewPager pager;
+    VPAdapter adapter;
 
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    public MypageActivity() {
-        // Required empty public constructor
-    }
-
-    // TODO: Rename and change types and number of parameters
-    public static MypageActivity newInstance(String param1, String param2) {
-        MypageActivity fragment = new MypageActivity();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
 
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         mContext = context;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-        if(FirebaseAuth.getInstance().getCurrentUser() == null){
-            startLoginActivity();
-        }
     }
 
     // popup 메뉴 생성 코드
@@ -141,10 +107,21 @@ public class MypageActivity extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.activity_mypage, container, false);
+        mAuth = FirebaseAuth.getInstance();
+
+        ViewGroup view = (ViewGroup) inflater.inflate(R.layout.activity_mypage, container, false);
         iv_profile = view.findViewById(R.id.iv_profile);
 
-        mAuth = FirebaseAuth.getInstance();
+        TabLayout tabLayout = view.findViewById(R.id.mypageTabLayout);
+        pager = view.findViewById(R.id.viewpager);
+        tabLayout.setupWithViewPager(pager);
+        VPAdapter adapter = new VPAdapter(getChildFragmentManager());
+        adapter.addFragment(new fragment_mypage_1(), "내 정보");
+        adapter.addFragment(new fragment_mypage_2(), "내 펫");
+        adapter.addFragment(new fragment_mypage_3(), "다이어리");
+        pager.setAdapter(adapter);
+
+
 
 
         // 이미지를 클릭 시 팝업메뉴가 먼저 나온다.
