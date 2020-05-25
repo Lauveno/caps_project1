@@ -11,9 +11,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -84,6 +82,8 @@ public class NewsActivity extends Fragment {
     private void prepareData(){
         mDataset.add(new String("news1"));
         mDataset.add(new String("news2"));
+        //oncreate 될때마다 불러오기 때문에 refresh 시킬 수 있는 code로 수정하기
+        //지금은 페이지 왔다갔다 하면 new1,2가 추가만 됨
     }
 
 }
