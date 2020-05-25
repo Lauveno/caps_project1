@@ -3,6 +3,7 @@ package com.example.caps_project1;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -18,7 +19,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class SignUpActivity extends AppCompatActivity {
 
-    private static final String TAG = "LoginActivity";
+    private static final String TAG = "SignUpActivity";
     private FirebaseAuth mAuth;
 
     private EditText et_email, et_password, et_password_check;
@@ -36,31 +37,28 @@ public class SignUpActivity extends AppCompatActivity {
             finish();
         }
 
-        findViewById(R.id.signUpButton).setOnClickListener(onClickListener);
-
+        Button signUpButton = (Button) findViewById(R.id.signUpButton);
+        signUpButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                signUp_Email();
+            }
+        });
 
         et_email = findViewById(R.id.emailEditText);
         et_password = findViewById(R.id.passwordEditText);
         et_password_check = findViewById(R.id.passwordCheckEditText);
-
     }
 
-    View.OnClickListener onClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            if (v.getId() == R.id.signUpButton) {
-                signUp_Email();
-            }
-        }
-    };
-
+    // 이메일 로그인
     private void signUp_Email() {
         String email = et_email.getText().toString();
         String password = et_password.getText().toString();
         String passwordCheck = et_password_check.getText().toString();
 
+        // 아이디, 비밀번호, 비밀번호 확인 모두 입력했는지 확인
         if(email.length() > 0 && password.length() > 0 && passwordCheck.length() > 0) {
-            if (password.equals(passwordCheck)) {
+            if (password.equals(passwordCheck)) { // 비밀번호 2중 확인
 
                 // createUserWithEmailAndPassword : 비밀번호 기반의 계정을 생성
                 mAuth.createUserWithEmailAndPassword(email, password)
