@@ -110,7 +110,7 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
         }
         mapView.getMapAsync(this);
 
-        if(!Places.isInitialized()) {
+       /* if(!Places.isInitialized()) {
             Places.initialize(context, "AIzaSyA0o3-3EtVdOxp5IYtqw2Bqdpc4l8kUcZY");
         }
 
@@ -133,7 +133,7 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
             public void onError(@NonNull Status status) {
                 Log.i(TAG, "An error occurred: " + status);
             }
-        });
+        }); */
 
         return layout;
     }
