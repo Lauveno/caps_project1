@@ -3,7 +3,6 @@ package com.example.caps_project1;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -18,7 +17,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Objects;
@@ -26,7 +24,7 @@ import java.util.Objects;
 
 public class SignUpActivity extends AppCompatActivity {
 
-    private static final String TAG = "SignUpActivity";
+    //private static final String TAG = "SignUpActivity";
     private EditText et_name, et_email, et_password, et_password_check, et_phone;
     private FirebaseAuth mAuth; // FirebaseAuth 인스턴스 선언
     private FirebaseDatabase database; // FirebaseDatabase 인스턴스 선언
@@ -38,10 +36,10 @@ public class SignUpActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance(); // FirebaseAuth 인스턴스 초기화
         database = FirebaseDatabase.getInstance(); // FirebaseDatabase 인스턴스 초기화
-        if (mAuth.getCurrentUser() != null) {
+        /*if (mAuth.getCurrentUser() != null) {
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
-        }
+        }*/
 
         Button signUpButton = findViewById(R.id.signUpButton);
         signUpButton.setOnClickListener(new View.OnClickListener() {
@@ -71,17 +69,15 @@ public class SignUpActivity extends AppCompatActivity {
             if (password.equals(passwordCheck)) { // 비밀번호 2중 확인
                 // createUserWithEmailAndPassword : 비밀번호 기반의 계정을 생성
                 mAuth.createUserWithEmailAndPassword(email, password)
-                        .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                        .addOnCompleteListener(SignUpActivity.this, new OnCompleteListener<AuthResult>() {
                             @RequiresApi(api = Build.VERSION_CODES.KITKAT)
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 if (task.isSuccessful()) {
                                     // Sign in success, update UI with the signed-in user's information
-                                    Log.d(TAG, "회원가입에 성공하였습니다.");
-                                    Toast.makeText(SignUpActivity.this, "회원가입에 성공하였습니다.", Toast.LENGTH_SHORT).show();
-                                    FirebaseUser user = mAuth.getCurrentUser();
-                                    startLoginActivity();
-                                    updateUI(user);
+                                    //Log.d(TAG, "회원가입에 성공하였습니다.");
+                                    //Toast.makeText(SignUpActivity.this, "회원가입에 성공하였습니다.", Toast.LENGTH_SHORT).show();
+                                    //FirebaseUser user = mAuth.getCurrentUser();
 
                                     // Firebase Realtime Database : 사용자 정보 (이메일, 페스워드) 저장
                                     UserData userdata = new UserData();
@@ -91,15 +87,20 @@ public class SignUpActivity extends AppCompatActivity {
                                     userdata.userPhoneNumber = et_phone.getText().toString();
                                     String uid = Objects.requireNonNull(Objects.requireNonNull(task.getResult()).getUser()).getUid();
                                     database.getReference().child("users").child(uid).setValue(userdata);
+                                    Toast.makeText(SignUpActivity.this, "회원가입에 성공하였습니다.", Toast.LENGTH_SHORT).show();
+                                    finish();
+                                    startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+                                    //updateUI(user);
 
                                 } else {
                                     // If sign in fails, display a message to the user.
                                     if (task.getException() != null) {
-                                        Log.w(TAG, "비밀번호가 일치하지 않습니다.", task.getException());
+                                        //Log.w(TAG, "비밀번호가 일치하지 않습니다.", task.getException());
                                         Toast.makeText(SignUpActivity.this, task.getException().toString(), Toast.LENGTH_SHORT).show();
-                                        updateUI(null);
-                                    }
+                                        //updateUI(null);
                                 }
+                                }
+
                             }
                         });
             } else {
@@ -116,7 +117,7 @@ public class SignUpActivity extends AppCompatActivity {
         }
     }
 
-    private void updateUI(FirebaseUser user) {
+    /*private void updateUI(FirebaseUser user) {
         if (user != null) {
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
@@ -126,13 +127,16 @@ public class SignUpActivity extends AppCompatActivity {
     private void startLoginActivity() {
         Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);
-    }
+    }*/
 
     @Override
     public void onStart() {
         super.onStart();
+        Intent intent = new Intent(this, LoginActivity.class);
+        startActivity(intent);
+        finish();
         // 활동을 초기화할 때 사용자가 현재 로그인되어 있는지 확인
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        updateUI(currentUser);
+        //FirebaseUser currentUser = mAuth.getCurrentUser();
+        //updateUI(currentUser);
     }
 }
