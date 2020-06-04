@@ -29,6 +29,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         // Item을 하나, 하나 보여주는(bind 되는) 함수입니다.
         holder.textView_title.setText(String.valueOf(mDataset.get(position).getTitle()));
+        holder.textView_content.setText(String.valueOf("refer to this link : "+ mDataset.get(position).getContent()));
     }
 
     public RecyclerAdapter(ArrayList<Data> mDataset){
@@ -54,7 +55,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
         public ViewHolder(View itemView) {
             super(itemView);
             textView_title = itemView.findViewById(R.id.textView_title);
-            //textView_content = itemView.findViewById(R.id.textView_content);
+            textView_content = itemView.findViewById(R.id.textView_content);
         }
 
         void onBind(Data data) {

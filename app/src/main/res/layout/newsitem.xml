@@ -45,6 +45,9 @@
             android:ellipsize="end"
             android:includeFontPadding="false"
             android:text="@string/newstext"
+            android:linksClickable="true"
+            android:autoLink="web"
+            android:textColorLink="@color/colorIndigo"
             android:textSize="18sp" />
 
     </LinearLayout>

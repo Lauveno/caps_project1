@@ -1,17 +1,14 @@
 package com.example.caps_project1;
 
-
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.SurfaceControl;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import org.jsoup.Jsoup;
@@ -67,29 +64,8 @@ public class NewsActivity extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.activity_news,container,false);
-        LinearLayout linearLayout;
-        linearLayout = (LinearLayout) view.findViewById(R.id.linearlayout1);
 
         mRecyclerView = (RecyclerView) view.findViewById(R.id.my_recycler_view);
-
-//        newsData task = new newsData();
-//        task.execute();
-
-//        mAdapter = new RecyclerAdapter(mDataset);
-//
-//        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
-//        mRecyclerView.setLayoutManager(mLayoutManager);
-//        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-//        mRecyclerView.setHasFixedSize(true);
-//        mRecyclerView.setAdapter(mAdapter);
-        /*
-        linearLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent (Intent.ACTION_VIEW, Uri.parse((String)mDataset.get().getContent());
-                startActivity(intent);
-            }
-        });*/
 
         return view;
     }
@@ -140,6 +116,7 @@ public class NewsActivity extends Fragment {
                         data.setContent(e.get(0).attr("href"));
                         mDataset.add(data);
                         Log.d("result: ","doc="+elements.text());
+                        Log.d("result: ","doc="+data.getContent());
 //                        Elements e2 = element.select("ul.relation_lst a");
 //                        if (e2 != null && e2.size()>0){
 //                            data2.setTitle(e2.get(0).attr("title").substring(0, 20) + "...");
@@ -175,8 +152,8 @@ public class NewsActivity extends Fragment {
 
         public Document getDocument(String url) throws IOException {
             Document doc = null;
-//            doc = Jsoup.connect(url).followRedirects(true).get();
-            doc = Jsoup.connect(url).timeout(3000).get();
+            doc = Jsoup.connect(url).followRedirects(true).get();
+//            doc = Jsoup.connect(url).timeout(3000).get();
             return doc;
         }
 
