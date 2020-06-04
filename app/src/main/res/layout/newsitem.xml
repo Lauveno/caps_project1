@@ -14,7 +14,9 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:id="@+id/linearlayout1">
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
@@ -22,7 +24,7 @@
                 android:id="@+id/ImageView_news"
                 android:layout_width="45dp"
                 android:layout_height="45dp"
-                android:src="@drawable/user" />
+                android:src="@drawable/newsicon2" />
 
             <TextView
                 android:id="@+id/textView_title"
@@ -30,7 +32,7 @@
                 android:layout_height="wrap_content"
                 android:layout_toRightOf="@id/ImageView_news"
                 android:layout_alignBaseline="@+id/ImageView_news"
-                android:text="example title"
+                android:text="News"
                 android:textStyle="bold"
                 android:textSize="20sp"
                 android:layout_toEndOf="@id/ImageView_news" />
@@ -42,7 +44,7 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:includeFontPadding="false"
-            android:text="contents part"
+            android:text="@string/newstext"
             android:textSize="18sp" />
 
     </LinearLayout>
