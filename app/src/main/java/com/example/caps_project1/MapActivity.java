@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -93,6 +94,42 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // 초기화 해야 하는 리소스들을 여기서 초기화 해준다.
+        Button hospital = (Button) mContext.findViewById(R.id.hospital);
+        Button burial = (Button)mContext.findViewById(R.id.burial);
+        Button petshop = (Button)mContext.findViewById(R.id.petshop);
+        Button shelter = (Button)mContext.findViewById(R.id.shelter);
+        Button medical = (Button)mContext.findViewById(R.id.medical);
+
+        hospital.setOnClickListener(new Button.OnClickListener() {
+            public void onClick(View v) {
+
+            }
+        });
+
+        burial.setOnClickListener(new Button.OnClickListener() {
+            public void onClick(View v) {
+
+            }
+        });
+
+        petshop.setOnClickListener(new Button.OnClickListener() {
+            public void onClick(View v) {
+
+            }
+        });
+
+        shelter.setOnClickListener(new Button.OnClickListener() {
+            public void onClick(View v) {
+
+            }
+        });
+
+        medical.setOnClickListener(new Button.OnClickListener() {
+            public void onClick(View v) {
+
+            }
+        });
+
     }
 
     @Nullable

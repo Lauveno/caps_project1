@@ -18,42 +18,47 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:orientation="horizontal"
-        android:gravity="center||bottom">
+        android:gravity="center"
+        android:orientation="horizontal">
+
         <Button
             android:id="@+id/hospital"
             android:layout_width="80dp"
             android:layout_height="80dp"
-            android:background="@drawable/button_hospital"
             android:layout_gravity="center_horizontal"
+            android:background="@drawable/button_hospital"
             android:text="hospital" />
+
         <Button
             android:id="@+id/burial"
             android:layout_width="80dp"
             android:layout_height="80dp"
-            android:background="@drawable/button_burial"
             android:layout_gravity="center_horizontal"
+            android:background="@drawable/button_burial"
             android:text="burial~~`" />
+
         <Button
             android:id="@+id/petshop"
             android:layout_width="80dp"
             android:layout_height="80dp"
-            android:background="@drawable/button_petshop"
             android:layout_gravity="center_horizontal"
+            android:background="@drawable/button_petshop"
             android:text="petshop" />
+
         <Button
             android:id="@+id/medical"
             android:layout_width="80dp"
             android:layout_height="80dp"
-            android:background="@drawable/button_medical"
             android:layout_gravity="center_horizontal"
+            android:background="@drawable/button_medical"
             android:text="medical" />
+
         <Button
             android:id="@+id/shelter"
             android:layout_width="80dp"
             android:layout_height="80dp"
-            android:background="@drawable/button_shelter"
             android:layout_gravity="center_horizontal"
+            android:background="@drawable/button_shelter"
             android:text="shelter" />
     </LinearLayout>
 
