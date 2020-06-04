@@ -88,10 +88,17 @@ public class LoginActivity extends AppCompatActivity {
                 // 그 토큰을 firebase에 서버로 넘겨줘 firebase는 유저의 계정을 만들게된다.
 
                 case R.id.resetPassword:
+                    startPasswordRestActivity();
                     break;
             }
         }
     };
+
+    private void startPasswordRestActivity() {
+        Intent intent = new Intent(this, PasswordResetActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+    }
 
     private void startSignUpActivity() {
         Intent intent = new Intent(this, SignUpActivity.class);
