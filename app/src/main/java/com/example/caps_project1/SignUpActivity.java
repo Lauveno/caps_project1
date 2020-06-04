@@ -128,7 +128,7 @@ public class SignUpActivity extends AppCompatActivity {
         Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);
     }*/
-
+/*
     @Override
     public void onStart() {
         super.onStart();
@@ -138,5 +138,5 @@ public class SignUpActivity extends AppCompatActivity {
         // 활동을 초기화할 때 사용자가 현재 로그인되어 있는지 확인
         //FirebaseUser currentUser = mAuth.getCurrentUser();
         //updateUI(currentUser);
-    }
+    }*/
 }
