@@ -48,5 +48,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-database:19.3.0'
     implementation 'com.google.android.gms:play-services-auth:18.0.0'
     implementation files('libs/jsoup-1.13.1.jar')
+
+    implementation 'com.github.prolificinteractive:material-calendarview:1.4.3'
 }
 apply plugin: 'com.google.gms.google-services'

@@ -13,6 +13,51 @@
         android:layout_height="match_parent"
         android:name="com.google.android.gms.maps.MapFragment" />
 
+    <LinearLayout
+        android:id="@+id/linearlayout_map"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal"
+        android:gravity="center||bottom">
+        <Button
+            android:id="@+id/hospital"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:background="@drawable/button_hospital"
+            android:layout_gravity="center_horizontal"
+            android:text="hospital" />
+        <Button
+            android:id="@+id/burial"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:background="@drawable/button_burial"
+            android:layout_gravity="center_horizontal"
+            android:text="burial~~`" />
+        <Button
+            android:id="@+id/petshop"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:background="@drawable/button_petshop"
+            android:layout_gravity="center_horizontal"
+            android:text="petshop" />
+        <Button
+            android:id="@+id/medical"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:background="@drawable/button_medical"
+            android:layout_gravity="center_horizontal"
+            android:text="medical" />
+        <Button
+            android:id="@+id/shelter"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:background="@drawable/button_shelter"
+            android:layout_gravity="center_horizontal"
+            android:text="shelter" />
+    </LinearLayout>
+
+<!--
     <androidx.cardview.widget.CardView
         xmlns:card_view="http://schemas.android.com/apk/res-auto"
         android:name="@+id/card_view"
