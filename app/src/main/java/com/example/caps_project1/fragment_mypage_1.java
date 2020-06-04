@@ -33,9 +33,16 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.caps_project1.database.UserData;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.io.File;
 import java.io.IOException;
@@ -45,7 +52,11 @@ import java.util.Date;
 
 
 public class fragment_mypage_1 extends Fragment {
+
+    // auth, database, storage
     private FirebaseAuth mAuth;
+    private FirebaseDatabase mDatabase;
+    private DatabaseReference mDBReference;
 
     private static final int REQUEST_CODE = 101;
     private static final int PERMISSON_CAMERA = 1111;
@@ -59,8 +70,10 @@ public class fragment_mypage_1 extends Fragment {
 
     private int id_view;
     private ImageView iv_profile;
+    private TextView tv_userName;
 
     private Context mContext;
+
 
     // popup 메뉴 생성 코드
     @Override
@@ -94,9 +107,30 @@ public class fragment_mypage_1 extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_mypage_1, container, false);
 
+        // DatabaseReference 객체는 파아어베이스 데이터를 참조할 때 사용한다.
         mAuth = FirebaseAuth.getInstance();
+        mDatabase = FirebaseDatabase.getInstance();
+        mDBReference = FirebaseDatabase.getInstance().getReference("uid");
 
         iv_profile = view.findViewById(R.id.iv_profile);
+        tv_userName = view.findViewById(R.id.userName);
+
+        mDBReference.child("userName").addValueEventListener(new ValueEventListener() {
+            @Override
+
+            // dataSnapshot 에서 값을 꺼내올 수 있다.
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                String username = dataSnapshot.getValue(String.class);
+                tv_userName.setText(username);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
 
         // 이미지를 클릭 시 팝업메뉴가 먼저 나온다.
 //        iv_profile.setOnClickListener(new View.OnClickListener() {

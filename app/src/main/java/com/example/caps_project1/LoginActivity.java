@@ -4,7 +4,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -58,6 +60,8 @@ public class LoginActivity extends AppCompatActivity {
         findViewById(R.id.gotoSignUpButton).setOnClickListener(onClickListener);
         findViewById(R.id.GoogleLogInButton).setOnClickListener(onClickListener);
 
+        findViewById(R.id.resetPassword).setOnClickListener(onClickListener);
+
         et_email = findViewById(R.id.emailEditText);
         et_password = findViewById(R.id.passwordEditText);
     }
@@ -81,9 +85,19 @@ public class LoginActivity extends AppCompatActivity {
                 // 구글 로그인 성공 -> 구글에서는 토큰을 넘겨준다.
                 // 토큰에는 유저 아이디와 이름이 암호화 (JsonWebToken) 되어있음
                 // 그 토큰을 firebase에 서버로 넘겨줘 firebase는 유저의 계정을 만들게된다.
+
+                case R.id.resetPassword:
+                    startPasswordRestActivity();
+                    break;
             }
         }
     };
+
+    private void startPasswordRestActivity() {
+        Intent intent = new Intent(this, PasswordResetActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+    }
 
     private void startSignUpActivity() {
         Intent intent = new Intent(this, SignUpActivity.class);

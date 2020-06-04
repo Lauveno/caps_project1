@@ -97,7 +97,7 @@ public class MypageActivity extends Fragment {
 
         VPAdapter adapter = new VPAdapter(getChildFragmentManager());
         adapter.addFragment(new fragment_mypage_1(), "내 정보");
-        adapter.addFragment(new fragment_mypage_2(), "내 펫");
+//        adapter.addFragment(new fragment_mypage_2(), "내 펫");
         adapter.addFragment(new fragment_mypage_3(), "다이어리");
         pager.setAdapter(adapter);
 
