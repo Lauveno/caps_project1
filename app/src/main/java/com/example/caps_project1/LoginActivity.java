@@ -4,7 +4,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -58,6 +60,8 @@ public class LoginActivity extends AppCompatActivity {
         findViewById(R.id.gotoSignUpButton).setOnClickListener(onClickListener);
         findViewById(R.id.GoogleLogInButton).setOnClickListener(onClickListener);
 
+        findViewById(R.id.resetPassword).setOnClickListener(onClickListener);
+
         et_email = findViewById(R.id.emailEditText);
         et_password = findViewById(R.id.passwordEditText);
     }
@@ -71,7 +75,8 @@ public class LoginActivity extends AppCompatActivity {
                     break;
 
                 case R.id.gotoSignUpButton:
-                    startSignUpActivity();
+                    startActivity(new Intent(getApplicationContext(), SignUpActivity.class));
+                    finish();
                     break;
 
                 case R.id.GoogleLogInButton:
@@ -81,9 +86,19 @@ public class LoginActivity extends AppCompatActivity {
                 // 구글 로그인 성공 -> 구글에서는 토큰을 넘겨준다.
                 // 토큰에는 유저 아이디와 이름이 암호화 (JsonWebToken) 되어있음
                 // 그 토큰을 firebase에 서버로 넘겨줘 firebase는 유저의 계정을 만들게된다.
+
+                case R.id.resetPassword:
+                    startPasswordRestActivity();
+                    break;
             }
         }
     };
+
+    private void startPasswordRestActivity() {
+        Intent intent = new Intent(this, PasswordResetActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+    }
 
     private void startSignUpActivity() {
         Intent intent = new Intent(this, SignUpActivity.class);
@@ -107,16 +122,15 @@ public class LoginActivity extends AppCompatActivity {
                     .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
-                            if (!task.isSuccessful()) {
+                            if (task.isSuccessful()) {
                                 // Sign in success, update UI with the signed-in user's information
-                                Log.d(TAG, "로그인에 성공하였습니다.");
+                                //Log.d(TAG, "로그인에 성공하였습니다.");
                                 Toast.makeText(LoginActivity.this, "로그인에 성공하였습니다.", Toast.LENGTH_SHORT).show();
                                 FirebaseUser user = mAuth.getCurrentUser();
-                                startMainActivity();
-                                //updateUI(user);
+                                updateUI(user);
                             } else {
                                 // If sign in fails, display a message to the user.
-                                Log.w(TAG, "로그인에 실패하였습니다.", task.getException());
+                                //Log.w(TAG, "로그인에 실패하였습니다.", task.getException());
                                 Toast.makeText(LoginActivity.this, "로그인에 실패하였습니다.", Toast.LENGTH_SHORT).show();
                                 updateUI(null);
                             }
@@ -184,6 +198,7 @@ public class LoginActivity extends AppCompatActivity {
     private void updateUI(FirebaseUser user) {
         if (user != null) {
             Intent intent = new Intent(this, MainActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
             finish();
         }

@@ -18,7 +18,7 @@
     <LinearLayout
         android:id="@+id/signin_layout"
         android:layout_width="match_parent"
-        android:layout_height="330dp"
+        android:layout_height="380dp"
         android:layout_alignParentBottom="true"
         android:orientation="vertical">
 
@@ -49,13 +49,22 @@
                 android:id="@+id/passwordEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="30dp"
+                android:layout_marginBottom="25dp"
                 android:autofillHints="@string/password"
                 android:ems="10"
                 android:hint="@string/password"
                 android:inputType="textPassword" />
         </com.google.android.material.textfield.TextInputLayout>
 
+        <TextView
+            android:id="@+id/resetPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="비밀번호를 잊으셨나요?"
+            android:gravity="right"
+            android:layout_marginRight="24dp"
+            android:layout_marginBottom="10dp"
+            />
 
         <Button
             android:id="@+id/logInButton"
