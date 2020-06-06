@@ -63,17 +63,17 @@ public class fragment_mypage_3 extends Fragment {
         // 오늘 날짜 받아오기
         Calendar cal = Calendar.getInstance();
         int calYear = cal.get(Calendar.YEAR);
-        int calMonth = cal.get(Calendar.MONTH);
+        int calMonth = cal.get(Calendar.MONTH) + 1;
         int calDay = cal.get(Calendar.DAY_OF_MONTH);
         
         // 시작 : 오늘 날짜 
-        checkedDay(calYear, calMonth+1, calDay);
+        checkedDay(calYear, calMonth, calDay);
 
         datePicker.init(datePicker.getYear(), datePicker.getMonth(), datePicker.getDayOfMonth(), new DatePicker.OnDateChangedListener() {
             @Override
             public void onDateChanged(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
 
-                // 선택한 날짜에 글이 있는지 체크
+                // 첫 시작에 글이 있는지 체크
                 checkedDay(year, monthOfYear, dayOfMonth);
             }
         });
