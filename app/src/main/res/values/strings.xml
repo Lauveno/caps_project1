@@ -25,8 +25,8 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="newshead"><![CDATA[<동물 뉴스>]]></string>
-    <string name="boardhead"><![CDATA[<게시판>]]></string>
+    <string name="newshead">동물 뉴스</string>
+    <string name="boardhead">게시판</string>
     <string name="content">내용</string>
     <string name="title">제목</string>
     <string name="board_btn">board_btn</string>
