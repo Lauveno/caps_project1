@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -46,11 +47,15 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import org.jsoup.parser.Parser;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 
 public class fragment_mypage_1 extends Fragment {
@@ -63,8 +68,9 @@ public class fragment_mypage_1 extends Fragment {
 
     private static final int REQUEST_CODE = 101;
     private static final int PERMISSON_CAMERA = 1111;
-    private static final int TAKE_PHOTO = 2222;
-    private static final int TAKE_ALBUM = 3333;
+    private static final int CAPTURE_IMAGE = 2222;
+    private static final int PICK_IMAGE = 3333;
+
     private static final int CROP_IMAGE = 4444;
 
     String mCurrentPhotoPath;
@@ -103,11 +109,13 @@ public class fragment_mypage_1 extends Fragment {
         super.onCreate(savedInstanceState);
     }
 
+
+
     // onCreate : fragment가 생성될 때 호출되는 부분
     // onCreateView : onCreate 후에 화면을 구성할 때 호출
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+                             Bundle savedInstanceState  ) {
         View view = inflater.inflate(R.layout.fragment_mypage_1, container, false);
 
         // DatabaseReference 객체는 파아어베이스 데이터를 참조할 때 사용한다.
@@ -177,19 +185,15 @@ public class fragment_mypage_1 extends Fragment {
 //            }
 //        });
 
+        // 프로필 사진 클릭 이벤트
         iv_profile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 checkPermission();
-                Intent intent = new Intent();
 
-                // 구글 갤러리 접근
-                 intent.setType("image/*");
+                photoDialogRadio();
 
-                // 기기 기본 갤러리 접근
-//                intent.setType(MediaStore.Images.Media.CONTENT_TYPE);
-                intent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(intent, REQUEST_CODE);
+//                startActivityForResult(intent, REQUEST_CODE);
             }
         });
 
@@ -278,10 +282,37 @@ public class fragment_mypage_1 extends Fragment {
         builder.show();
     }
 
+    // 사진찍기 or 앨범 선택 다이얼로그
+    void photoDialogRadio() {
+        final CharSequence[] PhotoModels = {"GALLERY", "CAMERA"};
+        AlertDialog.Builder alt = new AlertDialog.Builder(mContext);
+
+        alt.setTitle("프로필 사진 설정하기");
+        alt.setSingleChoiceItems(PhotoModels, -1, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int item) {
+                Toast.makeText(mContext, PhotoModels[item] + " 선택 되었습니다.", Toast.LENGTH_SHORT).show();
+                if (item == 0) {
+                    // 갤러리
+                    Intent intent = new Intent();
+                    intent.setType("image/*");
+                    intent.setAction(Intent.ACTION_GET_CONTENT);
+                    startActivityForResult(intent, PICK_IMAGE);
+                } else {
+                    // 사진 가져오기
+                    Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                    startActivityForResult(cameraIntent, CAPTURE_IMAGE);
+                }
+            }
+        });
+
+        AlertDialog alert = alt.create();
+        alert.show();
+    }
+
 
     // ActivityCompat.checkSelfPermission : 카메라 및 외부 저장소 퍼미션 상태를 체크
     private void checkPermission() {
-
         String temp = "";
 
         // 파일 읽기 권한
@@ -297,8 +328,10 @@ public class fragment_mypage_1 extends Fragment {
         }
 
         if (TextUtils.isEmpty(temp) == false) {
-            ActivityCompat.requestPermissions(getActivity(), temp.trim().split(" ", 1), 1);
+            // 권한 요청
+            ActivityCompat.requestPermissions(getActivity(), temp.trim().split(" "), 1);
         } else {
+            // 허용 상태
             Toast.makeText(mContext, "권한을 모두 허용", Toast.LENGTH_SHORT).show();
         }
 
@@ -343,16 +376,15 @@ public class fragment_mypage_1 extends Fragment {
     // 권한에 대한 응답이 있을 때 작동하는 함수
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        Log.d(this.getClass().getSimpleName(), "onRequestPermissionResult");
 
-        // 권한 허용
-        if (requestCode == 1) {
-            int length = permissions.length;
-            for(int i=0; i<length; i++) {
-                if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
-                    Log.d("maypage", "권한 허용 : " + permissions[i]);
-            }
+        if (grantResults[0] == PackageManager.PERMISSION_GRANTED &&
+        grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+            Log.d(this.getClass().getSimpleName(), "Permission: " + permissions[0] + "was " + grantResults[0]);
         }
-//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
 //        if (requestCode == 0) {
 //            if (grantResults[0] == 0) {
 //                Toast.makeText(mContext, "카메라 권한 승인 완료", Toast.LENGTH_SHORT).show();
@@ -360,29 +392,35 @@ public class fragment_mypage_1 extends Fragment {
 //                Toast.makeText(mContext, "카메라 권한 승인 거절", Toast.LENGTH_SHORT).show();
 //
 //            }
-        }
-    }
 
 
+
+    // 갤러리 사진 가져온 결과를 비트맵으로 저장
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
+        super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == REQUEST_CODE && requestCode == Activity.RESULT_OK) {
+        if (requestCode == PICK_IMAGE && resultCode == Activity.RESULT_OK && data.getData() != null) {
+            try {
+                Bitmap img = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(),
+                        data.getData());
+//                InputStream in = getActivity().getContentResolver().openInputStream(data.getData());
+//                Bitmap img = BitmapFactory.decodeStream(in);
+//                in.close();
 
-                try {
-                    InputStream in = getActivity().getContentResolver().openInputStream(data.getData());
-
-                    Bitmap img = BitmapFactory.decodeStream(in);
-                    in.close();
-                    iv_profile.setImageBitmap(img);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            } else if (requestCode == REQUEST_CODE  && requestCode == Activity.RESULT_CANCELED) {
-                Toast.makeText(mContext, "사진 선택 취소", Toast.LENGTH_SHORT).show();
+                // 이미지표시
+                iv_profile.setImageBitmap(img);
+//                imageURI = Uri.parse(data.getData() + "");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else if (requestCode == CAPTURE_IMAGE && resultCode == Activity.RESULT_OK && data.hasExtra("data")) {
+            Bitmap bitmap = (Bitmap) data.getExtras().get("data");
+            if (bitmap != null) {
+                iv_profile.setImageBitmap(bitmap);
             }
         }
+    }
 //        switch (requestCode) {
 //            case TAKE_PHOTO:
 //                if (requestCode == Activity.RESULT_OK) {
@@ -428,42 +466,42 @@ public class fragment_mypage_1 extends Fragment {
 //    }
 
     // 갤러리에 사진이 추가되고 선택할 수 있다.
-    private void getAlbum() {
-        Intent intent = new Intent(Intent.ACTION_PICK);
-
+//    private void getAlbum() {
+//        Intent intent = new Intent(Intent.ACTION_PICK);
+//
 //        intent.setType("image/*");
-        intent.setType(android.provider.MediaStore.Images.Media.CONTENT_TYPE);
-
-        startActivityForResult(intent, TAKE_ALBUM);
-    }
+//        intent.setType(android.provider.MediaStore.Images.Media.CONTENT_TYPE);
+//
+//        startActivityForResult(intent, TAKE_ALBUM);
+//    }
 
 
     // 사진 촬영 함수
-    private void captureCamera() {
-        String state = Environment.getExternalStorageState();
-        if (Environment.MEDIA_MOUNTED.equals(state)) {
-            Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-
-            if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
-                File photoFile = null;
-                try {
-                    photoFile = createImageFile();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                if (photoFile != null) {
-                    Uri providerUri = FileProvider.getUriForFile(mContext, getActivity().getPackageName(), photoFile);
-                    imageURI = providerUri;
-
-                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, providerUri);
-                    startActivityForResult(takePictureIntent, TAKE_PHOTO);
-                }
-            } else {
-                Toast.makeText(mContext, "접근 불가능 합니다", Toast.LENGTH_SHORT).show();
-                return;
-            }
-        }
-    }
+//    private void captureCamera() {
+//        String state = Environment.getExternalStorageState();
+//        if (Environment.MEDIA_MOUNTED.equals(state)) {
+//            Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//
+//            if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+//                File photoFile = null;
+//                try {
+//                    photoFile = createImageFile();
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//                if (photoFile != null) {
+//                    Uri providerUri = FileProvider.getUriForFile(mContext, getActivity().getPackageName(), photoFile);
+//                    imageURI = providerUri;
+//
+//                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, providerUri);
+//                    startActivityForResult(takePictureIntent, TAKE_PHOTO);
+//                }
+//            } else {
+//                Toast.makeText(mContext, "접근 불가능 합니다", Toast.LENGTH_SHORT).show();
+//                return;
+//            }
+//        }
+//    }
 
 
     // 촬영, 크롭된 사진에 대한 이미지 저장 함수
@@ -471,7 +509,7 @@ public class fragment_mypage_1 extends Fragment {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "JPEG_" + timeStamp + ".jpg";
         File imageFile = null;
-        File storageDir = new File(Environment.getExternalStorageDirectory() + "/Pictures");
+        File storageDir = new File (Environment.getExternalStorageDirectory() + "/Pictures");
 
         if (!storageDir.exists()) {
             storageDir.mkdir();
@@ -481,6 +519,8 @@ public class fragment_mypage_1 extends Fragment {
 
         return imageFile;
     }
+
+
 
 
     // 사진을 크롭하는 함수
@@ -519,4 +559,21 @@ public class fragment_mypage_1 extends Fragment {
     }
 
 
+    // save a jpeg
+    private static class ImageUpLoader implements Runnable {
+
+        private final Image mImage;
+        ImageUpLoader(Image image) {
+            mImage = image;
+        }
+
+        @Override
+        public void run() {
+            ByteBuffer buffer = mImage.getPlanes()[0].getBuffer();
+            byte[] bytes = new byte[buffer.remaining()];
+            buffer.get(bytes);
+        }
+    }
+
 }
+
