@@ -108,7 +108,7 @@
                 android:background="#e9ecef" /> -->
 
             <Button
-                android:id="@+id/changePassword"
+                android:id="@+id/changeProfile"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="left|center"

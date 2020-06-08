@@ -44,5 +44,6 @@
         <activity android:name=".MainActivity" />
         <activity android:name=".SignUpActivity" />
         <activity android:name=".PasswordResetActivity" />
+        <activity android:name=".MemberInitActivity" />
     </application>
 </manifest>

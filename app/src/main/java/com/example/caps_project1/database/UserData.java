@@ -5,8 +5,4 @@ public class UserData {
     public String userEmail;
     public String userPassword;
     public String userPhoneNumber;
-
-    public UserData() {
-        // default constructor
-    }
 }

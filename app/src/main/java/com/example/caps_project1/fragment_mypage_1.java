@@ -38,6 +38,8 @@ import android.widget.Toast;
 
 import com.example.caps_project1.database.UserData;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserInfo;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -57,6 +59,7 @@ public class fragment_mypage_1 extends Fragment {
     private FirebaseAuth mAuth;
     private FirebaseDatabase mDatabase;
     private DatabaseReference mDBReference;
+    private FirebaseUser user;
 
     private static final int REQUEST_CODE = 101;
     private static final int PERMISSON_CAMERA = 1111;
@@ -111,9 +114,13 @@ public class fragment_mypage_1 extends Fragment {
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance();
         mDBReference = FirebaseDatabase.getInstance().getReference("uid");
+        user = FirebaseAuth.getInstance().getCurrentUser();
+
 
         iv_profile = view.findViewById(R.id.iv_profile);
         tv_userName = view.findViewById(R.id.userName);
+
+
 
         mDBReference.child("userName").addValueEventListener(new ValueEventListener() {
             @Override
@@ -186,6 +193,16 @@ public class fragment_mypage_1 extends Fragment {
             }
         });
 
+
+        // 회원정보 수정
+        Button updateProfileButton = view.findViewById(R.id.changeProfile);
+        updateProfileButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startMemberInitActivity();
+
+            }
+        });
 
         // 로그아웃
         Button logoutButton = view.findViewById(R.id.logoutButton);
@@ -494,6 +511,10 @@ public class fragment_mypage_1 extends Fragment {
 
     private void startLoginActivity() {
         Intent intent = new Intent(getActivity(), LoginActivity.class);
+        startActivity(intent);
+    }
+    private void startMemberInitActivity() {
+        Intent intent = new Intent(getActivity(), MemberInitActivity.class);
         startActivity(intent);
     }
 
