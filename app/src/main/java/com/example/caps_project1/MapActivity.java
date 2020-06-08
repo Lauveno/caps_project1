@@ -1,7 +1,9 @@
 package com.example.caps_project1;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -9,10 +11,12 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Looper;
+import android.os.StrictMode;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -42,6 +46,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -67,7 +72,7 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
 
     private static final int GPS_ENABLE_REQUEST_CODE = 2001;
     private static final int UPDATE_INTERVAL_MS = 1000 * 60 * 1;  // 1분 단위 시간 갱신
-    private static final int FASTEST_UPDATE_INTERVAL_MS = 1000 * 30 ; // 30초 단위로 화면 갱신
+    private static final int FASTEST_UPDATE_INTERVAL_MS = 1000 * 30; // 30초 단위로 화면 갱신
 
     private static final String KEY_CAMERA_POSITION = "camera_position";
     private static final String KEY_LOCATION = "location";
@@ -77,15 +82,28 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
 
     @Override
     public void onAttach(Activity activity) { // Fragment 가 Activity에 attach 될 때 호출된다.
-        mContext =(FragmentActivity) activity;
+        mContext = (FragmentActivity) activity;
         super.onAttach(activity);
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // 초기화 해야 하는 리소스들을 여기서 초기화 해준다.
+
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+
+        mContext.setContentView(R.layout.activity_map);
+        Button hospital = (Button) mContext.findViewById(R.id.hospital);
+        hospital.setOnClickListener((View.OnClickListener) this);
     }
+
+    public void onClick(View view) {
+        Intent intent = new Intent(mContext.getApplicationContext(), PharmParser_hospital.class);
+    }
+
+    //  여기부터
+    //  지도생성
 
     @Nullable
     @Override
@@ -95,9 +113,9 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
             mCurrentLocation = savedInstanceState.getParcelable(KEY_LOCATION);
             CameraPosition mCameraPosition = savedInstanceState.getParcelable(KEY_CAMERA_POSITION);
         }
-        View layout =  inflater.inflate(R.layout.activity_map,container,false);
-        mapView = (MapView)layout.findViewById(R.id.map);
-        if(mapView != null) {
+        View layout = inflater.inflate(R.layout.activity_map, container, false);
+        mapView = (MapView) layout.findViewById(R.id.map);
+        if (mapView != null) {
             mapView.onCreate(savedInstanceState);
         }
         mapView.getMapAsync(this);
@@ -185,7 +203,7 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
                 mCurrentLocation = null;
                 getLocationPermission();
             }
-        } catch (SecurityException e)  {
+        } catch (SecurityException e) {
             Log.e("Exception: %s", e.getMessage());
         }
     }
@@ -207,20 +225,20 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
 
     String getCurrentAddress(LatLng latlng) {
         // 위치 정보와 지역으로부터 주소 문자열을 구한다.
-        List<Address> addressList = null ;
-        Geocoder geocoder = new Geocoder( mContext, Locale.getDefault());
+        List<Address> addressList = null;
+        Geocoder geocoder = new Geocoder(mContext, Locale.getDefault());
 
         // 지오코더를 이용하여 주소 리스트를 구한다.
         try {
-            addressList = geocoder.getFromLocation(latlng.latitude,latlng.longitude,1);
+            addressList = geocoder.getFromLocation(latlng.latitude, latlng.longitude, 1);
         } catch (IOException e) {
-            Toast. makeText( mContext, "위치로부터 주소를 인식할 수 없습니다. 네트워크가 연결되어 있는지 확인해 주세요.", Toast.LENGTH_SHORT ).show();
+            Toast.makeText(mContext, "위치로부터 주소를 인식할 수 없습니다. 네트워크가 연결되어 있는지 확인해 주세요.", Toast.LENGTH_SHORT).show();
             e.printStackTrace();
-            return "주소 인식 불가" ;
+            return "주소 인식 불가";
         }
 
         if (addressList.size() < 1) { // 주소 리스트가 비어있는지 비어 있으면
-            return "해당 위치에 주소 없음" ;
+            return "해당 위치에 주소 없음";
         }
 
         // 주소를 담는 문자열을 생성하고 리턴
@@ -262,13 +280,14 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
 
     };
 
-    private String CurrentTime(){
+    private String CurrentTime() {
         Date today = new Date();
         SimpleDateFormat date = new SimpleDateFormat("yyyy/MM/dd");
         SimpleDateFormat time = new SimpleDateFormat("hh:mm:ss a");
         return time.format(today);
     }
 
+    //현재위치 마커표시
     public void setCurrentLocation(Location location, String markerTitle, String markerSnippet) {
         if (currentMarker != null) currentMarker.remove();
 
@@ -284,6 +303,23 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
 
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLng(currentLatLng);
         mMap.moveCamera(cameraUpdate);
+
+        PharmParser_hospital pharmParser_hospital = new PharmParser_hospital();
+        ArrayList<PharmDTO_hospital> list = null;
+        try {
+            list = pharmParser_hospital.apiParserSearch();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        for(PharmDTO_hospital entity : list) {
+            MarkerOptions options = new MarkerOptions();
+            options.title(entity.getLocality());
+            options.title(entity.getName());
+            options.icon(BitmapDescriptorFactory.fromResource(R.drawable.placeholder));
+
+            mMap.addMarker(options);
+        }
     }
 
     private void getDeviceLocation() {
@@ -291,7 +327,7 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
             if (mLocationPermissionGranted) {
                 mFusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper());
             }
-        } catch (SecurityException e)  {
+        } catch (SecurityException e) {
             Log.e("Exception: %s", e.getMessage());
         }
     }
@@ -353,12 +389,6 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
     public void onResume() { // 유저에게 Fragment가 보여지고, 유저와 상호작용이 가능하게 되는 부분
         super.onResume();
         mapView.onResume();
-        if (mLocationPermissionGranted) {
-            Log.d(TAG, "onResume : requestLocationUpdates");
-            mFusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, null);
-            if (mMap!=null)
-                mMap.setMyLocationEnabled(true);
-        }
     }
 
     @Override

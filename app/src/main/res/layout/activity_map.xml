@@ -12,6 +12,14 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:name="com.google.android.gms.maps.MapFragment" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="hospital"
+        android:onClick="onClick"
+        android:id="@+id/hospital"
+        tools:ignore="OnClick" />
 <!--
     <androidx.cardview.widget.CardView
         xmlns:card_view="http://schemas.android.com/apk/res-auto"
