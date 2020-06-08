@@ -55,7 +55,7 @@
                     android:layout_alignParentRight="true"
                     android:layout_alignTop="@id/view"
 
-                    android:layout_marginLeft="93dp"
+                    android:layout_marginLeft="67dp"
                     android:layout_marginTop="30dp"
                     android:layout_toRightOf="@id/iv_profile"
                     android:text="userName" />
