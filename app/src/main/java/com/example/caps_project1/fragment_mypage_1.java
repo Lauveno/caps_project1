@@ -38,6 +38,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.caps_project1.database.UserData;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserInfo;
@@ -46,6 +48,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import org.jsoup.parser.Parser;
 
@@ -56,6 +61,7 @@ import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 
 public class fragment_mypage_1 extends Fragment {
@@ -298,10 +304,12 @@ public class fragment_mypage_1 extends Fragment {
                     intent.setType("image/*");
                     intent.setAction(Intent.ACTION_GET_CONTENT);
                     startActivityForResult(intent, PICK_IMAGE);
+                    dialog.dismiss();
                 } else {
                     // 사진 가져오기
                     Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                     startActivityForResult(cameraIntent, CAPTURE_IMAGE);
+                    dialog.dismiss();
                 }
             }
         });
@@ -402,6 +410,13 @@ public class fragment_mypage_1 extends Fragment {
 
         if (requestCode == PICK_IMAGE && resultCode == Activity.RESULT_OK && data.getData() != null) {
             try {
+                // 갤러리에서 이미지가 선택되면 <파일주소: url> 이 넘어감 == data.getData()
+                // String path 로 안받아져서 public String getPath(Uri uri){
+                //  String[] proj = {MediaStore.Images.Media.DATA};
+                //  CursorLoader cursorLoader = new CursorLoader(this, uri, proj, null, null, null);
+                // Cursor cursor = cursorLoader.loadInBackground(); int index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+                // cursor.moveToFirst(); return cursor.getString(index);
+                // }
                 Bitmap img = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(),
                         data.getData());
 //                InputStream in = getActivity().getContentResolver().openInputStream(data.getData());
@@ -418,6 +433,7 @@ public class fragment_mypage_1 extends Fragment {
             Bitmap bitmap = (Bitmap) data.getExtras().get("data");
             if (bitmap != null) {
                 iv_profile.setImageBitmap(bitmap);
+
             }
         }
     }
@@ -519,6 +535,11 @@ public class fragment_mypage_1 extends Fragment {
 
         return imageFile;
     }
+    private void saveFile() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.ENGLISH);
+        String filename = sdf.format(new Date());
+
+    }
 
 
 
@@ -572,6 +593,27 @@ public class fragment_mypage_1 extends Fragment {
             ByteBuffer buffer = mImage.getPlanes()[0].getBuffer();
             byte[] bytes = new byte[buffer.remaining()];
             buffer.get(bytes);
+
+            // Cloud Storage 파일 업로드
+            FirebaseStorage storage = FirebaseStorage.getInstance();
+            StorageReference storageRef = storage.getReference();
+            StorageReference mountainImageRef = storageRef.child("images/mountains.jpg");
+
+
+            // 메모리에서 업로드
+            UploadTask uploadTask = mountainImageRef.putBytes(bytes);
+            uploadTask.addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Log.e("실패", "실패");
+
+                }
+            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    Log.e("성공", "성공");
+                }
+            });
         }
     }
 
