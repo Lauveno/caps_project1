@@ -13,6 +13,8 @@ import android.view.ViewGroup;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.ArrayList;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -26,6 +28,8 @@ public class BoardActivity extends Fragment {
     // db 에 앱이 직접 저장하는게 아니고 DatabaseReference 를 매개체 삼아 저장하고 읽어오는 방식
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference myRef = database.getReference();
+
+    private ArrayList<Data> mDataset = new ArrayList<Data>(); //이용할 ArrayList?!
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
