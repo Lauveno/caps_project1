@@ -9,17 +9,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-
-import java.util.ArrayList;
-
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -31,12 +30,14 @@ public class BoardActivity extends Fragment {
     // db 에 앱이 직접 저장하는게 아니고 DatabaseReference 를 매개체 삼아 저장하고 읽어오는 방식
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference myRef = database.getReference();
+    private static final String TAG = "BoardActivity";
 
     private ArrayList<Board> mDataset = new ArrayList<Board>(); //이용할 ArrayList?!
     private RecyclerView bdRecyclerView;
     private BDAdapter mAdapter;
     private Context mContext;
     private Board mBoard; //data class
+    // private FirebaseUser user;
 
     public BoardActivity() {
         // Required empty public constructor
@@ -68,7 +69,6 @@ public class BoardActivity extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
     @Override
@@ -78,8 +78,50 @@ public class BoardActivity extends Fragment {
         View view =  inflater.inflate(R.layout.activity_board,container,false);
         bdRecyclerView = (RecyclerView) view.findViewById(R.id.my_recycler_view_board);
         return view;
+        // findViewById(R.id.board_btn).setOnClickListener(OnClickListener);
     }
+    /* 게시물 작성 시 Firebase의 Cloud Firestore에 작성된 게시글의 정보를 저장한다.
+        View.OnClickListener onClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (v.getId() == R.id.board_btn) {
+                    writeUpdate();
+                }
+            }
+        };
 
+        private void writeUpdate() {
+            final String title = ((EditText) findViewById(R.id.board_title)).getText().toString();
+            final String Contents = ((EditText) findViewById(R.id.board_content)).getText().toString();
+
+
+            if (title.length() > 1 && Contents.length() > 1) {
+                user = FirebaseAuth.getInstance().getCurrentUser();
+                WriteInfo writeInfo = new WriteInfo(title, Contents, user.getUid());
+                uploader(writeInfo);
+
+            } else {
+                Toast.makeText(BoardActivity.this, "내용을 입력하세요.", Toast.LENGTH_SHORT).show();
+            }
+        }
+
+        private void uploader(WriteInfo writeInfo){
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            db.collection("posts").add(writeInfo)
+                    .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                        @Override
+                        public void onSuccess(DocumentReference documentReference) {
+                            Log.w(TAG, "DocumentSnapshot written with ID: " + documentReference.getId());
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.w(TAG, "Error adding document", e);
+                        }
+                    });
+        }
+    */
     private class boardData extends AsyncTask<Void, Void, ArrayList<Board>> {
 
         private ProgressDialog progressDialog;
