@@ -4,9 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -59,7 +57,6 @@ public class LoginActivity extends AppCompatActivity {
         findViewById(R.id.logInButton).setOnClickListener(onClickListener);
         findViewById(R.id.gotoSignUpButton).setOnClickListener(onClickListener);
         findViewById(R.id.GoogleLogInButton).setOnClickListener(onClickListener);
-
         findViewById(R.id.resetPassword).setOnClickListener(onClickListener);
 
         et_email = findViewById(R.id.emailEditText);
@@ -75,8 +72,7 @@ public class LoginActivity extends AppCompatActivity {
                     break;
 
                 case R.id.gotoSignUpButton:
-                    startActivity(new Intent(getApplicationContext(), SignUpActivity.class));
-                    finish();
+                    startSignUpActivity();
                     break;
 
                 case R.id.GoogleLogInButton:
@@ -102,12 +98,6 @@ public class LoginActivity extends AppCompatActivity {
 
     private void startSignUpActivity() {
         Intent intent = new Intent(this, SignUpActivity.class);
-        startActivity(intent);
-    }
-
-    private void startMainActivity() {
-        Intent intent = new Intent(this, MainActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
     }
 

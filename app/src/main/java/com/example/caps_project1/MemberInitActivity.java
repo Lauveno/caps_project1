@@ -1,6 +1,5 @@
 package com.example.caps_project1;
 
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -12,13 +11,10 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.caps_project1.database.UserInfomation;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 public class MemberInitActivity extends AppCompatActivity {
@@ -53,46 +49,38 @@ public class MemberInitActivity extends AppCompatActivity {
 
     private void profileUpdate() {
         String name = ((EditText) findViewById(R.id.nameEditText)).getText().toString();
-        String phoneNumber = ((EditText) findViewById(R.id.phoneEditText)).getText().toString();
+        String gender = ((EditText) findViewById(R.id.genderEditText)).getText().toString();
         String birth = ((EditText) findViewById(R.id.birthEditText)).getText().toString();
         String address = ((EditText) findViewById(R.id.addressEditText)).getText().toString();
 
 
-        if (name.length() > 0 && phoneNumber.length() > 9 && birth.length() > 5 &&
+        if (name.length() > 0 && gender.length() > 0 && birth.length() > 5 &&
                 address.length() > 0) {
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-            UserInfomation userInfo = new UserInfomation(name, phoneNumber, birth, address);
+            UserInfomation userInfo = new UserInfomation(name, gender, birth, address);
 
             if (user != null) {
                 db.collection("users").document(user.getUid()).set(userInfo)
                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
-                                startToast("회원정보 등록을 성공하였습니다.");
+                                Toast.makeText(MemberInitActivity.this, "회원정보 등록을 성공하였습니다.", Toast.LENGTH_SHORT).show();
                                 finish();
                             }
                         })
                         .addOnFailureListener(new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
-                                startToast("회원정보 등록을 싪패하였습니다.");
+                                Toast.makeText(MemberInitActivity.this, "회원정보 등록을 실패하였습니다.", Toast.LENGTH_SHORT).show();
                                 Log.w(TAG, "Error", e);
                             }
                         });
             }
 
         } else {
-            startToast("회원정보를 입력해주세요.");
+            Toast.makeText(MemberInitActivity.this, "회원정보를 입력해주세요.", Toast.LENGTH_SHORT).show();
         }
-
     }
-
-
-    private void startToast(String msg) {
-        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
-    }
-
-
 }

@@ -97,6 +97,7 @@ public class NewsActivity extends Fragment {
         @Override
         protected ArrayList<Data> doInBackground(Void... voids) {
             String htmlPageUrl = "https://search.naver.com/search.naver?where=news&sm=tab_jum&query=%EB%8F%99%EB%AC%BC&nso=so%3Ar%2Cp%3Aall%2Ca%3Aall";
+            String htmlPage2 = "https://search.naver.com/search.naver?sm=tab_hty.top&where=news&query=%EB%B0%98%EB%A0%A4%EA%B2%AC&oquery=%EB%B0%98%EB%A0%A4&tqi=UW%2Bkxlp0Jy0ssuQpWiKssssssc4-452699";
             //파싱할 홈페이지의 URL주소, 동물뉴스 웹페이지
 
             try{
@@ -107,24 +108,15 @@ public class NewsActivity extends Fragment {
                 for (Element element : elements) {
 
                     Data data = new Data();
-//                    Data data2 = new Data();
 
                     Elements e = element.select("dt a._sp_each_title");
                     if (e != null && e.size()>0) {
                         data.setTitle(e.get(0).attr("title").substring(0, 20) + "...");
                         data.setContent(e.get(0).attr("href"));
                         mDataset.add(data);
-                        Log.d("result: ","doc="+elements.text());
-                        Log.d("result: ","doc="+data.getContent());
-//                        Elements e2 = element.select("ul.relation_lst a");
-//                        if (e2 != null && e2.size()>0){
-//                            data2.setTitle(e2.get(0).attr("title").substring(0, 20) + "...");
-//                            data2.setContent(e2.get(0).attr("href"));
-//                            mDataset.add(data2);
-//                        }
+//                        Log.d("result: ","doc="+elements.text());
+//                        Log.d("result: ","doc="+data.getContent());
                     }
-//                    if (e != null && e.size()>0)
-//                        data.setContent(e.get(0).attr("href"));
                 }
 
             }catch (Exception e){

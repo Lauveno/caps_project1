@@ -127,30 +127,34 @@ public class fragment_mypage_1 extends Fragment {
         // DatabaseReference 객체는 파아어베이스 데이터를 참조할 때 사용한다.
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance();
-        mDBReference = FirebaseDatabase.getInstance().getReference("uid");
+        DatabaseReference myRootRef = FirebaseDatabase.getInstance().getReference();
+        mDBReference = myRootRef.child("users").child("uid");
         user = FirebaseAuth.getInstance().getCurrentUser();
 
 
         iv_profile = view.findViewById(R.id.iv_profile);
         tv_userName = view.findViewById(R.id.userName);
 
-
-
-        mDBReference.child("userName").addValueEventListener(new ValueEventListener() {
-            @Override
-
-            // dataSnapshot 에서 값을 꺼내올 수 있다.
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                String username = dataSnapshot.getValue(String.class);
-                tv_userName.setText(username);
+        if (user != null) {
+            for (UserInfo profile : user.getProviderData()) {
+                String name = profile.getDisplayName();
+                tv_userName.setText(name);
             }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
+        }
+//
+//        mDBReference.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                String userName = dataSnapshot.getValue(String.class);
+//                tv_userName.setText(userName);
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//                // failed
+//                Log.w(this.getClass().getSimpleName(), databaseError.toException());
+//            }
+//        });
 
 
         // 이미지를 클릭 시 팝업메뉴가 먼저 나온다.

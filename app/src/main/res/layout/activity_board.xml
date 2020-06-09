@@ -31,16 +31,18 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
+
                 <EditText
                     android:id="@+id/board_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:hint="@string/title"
                     android:ems="10"
-                    android:maxLength="20"/>
+                    android:inputType="textPersonName"
+                    android:hint="@string/title"
+                    android:maxLength="20" />
 
                 <Button
-                    android:id="@+id/boardbtn"
+                    android:id="@+id/board_btn"
                     android:layout_width="100dp"
                     android:layout_height="50dp"
                     android:layout_marginEnd="5dp"
@@ -52,22 +54,35 @@
             </RelativeLayout>
             <EditText
                 android:id="@+id/board_content"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:ems="10"
+                android:gravity="start|top"
+                android:inputType="textMultiLine"
                 android:hint="@string/content"
-                android:ems="15"/>
+                android:lines="10" />
         </LinearLayout>
-
+        <TextView
+            android:id="@+id/textView_boardline"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_gravity="start"
+            android:layout_marginTop="5dp"
+            android:layout_marginStart="5dp"
+            android:text="@string/boardline"
+            android:textStyle="bold"
+            android:textSize="22sp"
+            android:textColor="@color/cardview_dark_background"/>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <!--androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/my_recycler_view_b"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/my_recycler_view_board"
                 android:scrollbars="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
-                -->
+
         </LinearLayout>
     </LinearLayout>
 
