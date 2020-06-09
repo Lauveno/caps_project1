@@ -36,10 +36,6 @@ public class SignUpActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance(); // FirebaseAuth 인스턴스 초기화
         database = FirebaseDatabase.getInstance(); // FirebaseDatabase 인스턴스 초기화
-        /*if (mAuth.getCurrentUser() != null) {
-            Intent intent = new Intent(this, LoginActivity.class);
-            startActivity(intent);
-        }*/
 
         Button signUpButton = findViewById(R.id.signUpButton);
         signUpButton.setOnClickListener(new View.OnClickListener() {
@@ -74,12 +70,7 @@ public class SignUpActivity extends AppCompatActivity {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 if (task.isSuccessful()) {
-                                    // Sign in success, update UI with the signed-in user's information
-                                    //Log.d(TAG, "회원가입에 성공하였습니다.");
-                                    //Toast.makeText(SignUpActivity.this, "회원가입에 성공하였습니다.", Toast.LENGTH_SHORT).show();
-                                    //FirebaseUser user = mAuth.getCurrentUser();
-
-                                    // Firebase Realtime Database : 사용자 정보 (이메일, 페스워드) 저장
+                                    // Firebase Realtime Database : 사용자 정보 (이메일, 페스워드 등) 읽어오기
                                     UserData userdata = new UserData();
                                     userdata.userName = et_name.getText().toString();
                                     userdata.userEmail = et_email.getText().toString();
@@ -90,17 +81,13 @@ public class SignUpActivity extends AppCompatActivity {
                                     Toast.makeText(SignUpActivity.this, "회원가입에 성공하였습니다.", Toast.LENGTH_SHORT).show();
                                     finish();
                                     startActivity(new Intent(getApplicationContext(), LoginActivity.class));
-                                    //updateUI(user);
-
                                 } else {
                                     // If sign in fails, display a message to the user.
                                     if (task.getException() != null) {
-                                        //Log.w(TAG, "비밀번호가 일치하지 않습니다.", task.getException());
                                         Toast.makeText(SignUpActivity.this, task.getException().toString(), Toast.LENGTH_SHORT).show();
                                         //updateUI(null);
+                                    }
                                 }
-                                }
-
                             }
                         });
             } else {
@@ -116,27 +103,8 @@ public class SignUpActivity extends AppCompatActivity {
             }
         }
     }
-
-    /*private void updateUI(FirebaseUser user) {
-        if (user != null) {
-            Intent intent = new Intent(this, LoginActivity.class);
-            startActivity(intent);
-        }
-    }
-
-    private void startLoginActivity() {
-        Intent intent = new Intent(this, LoginActivity.class);
-        startActivity(intent);
-    }*/
-/*
     @Override
     public void onStart() {
         super.onStart();
-        Intent intent = new Intent(this, LoginActivity.class);
-        startActivity(intent);
-        finish();
-        // 활동을 초기화할 때 사용자가 현재 로그인되어 있는지 확인
-        //FirebaseUser currentUser = mAuth.getCurrentUser();
-        //updateUI(currentUser);
-    }*/
+    }
 }
