@@ -57,17 +57,27 @@
                 android:hint="@string/content"
                 android:ems="15"/>
         </LinearLayout>
-
+        <TextView
+            android:id="@+id/textView_boardline"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_gravity="start"
+            android:layout_marginTop="5dp"
+            android:layout_marginStart="5dp"
+            android:text="@string/boardline"
+            android:textStyle="bold"
+            android:textSize="22sp"
+            android:textColor="@color/cardview_dark_background"/>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <!--androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/my_recycler_view_b"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/my_recycler_view_board"
                 android:scrollbars="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
-                -->
+
         </LinearLayout>
     </LinearLayout>
 
