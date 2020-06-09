@@ -17,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -93,15 +94,38 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
-        mContext.setContentView(R.layout.activity_map);
-        Button hospital = (Button) mContext.findViewById(R.id.hospital);
-        hospital.setOnClickListener((View.OnClickListener) this);
-    }
+        ImageButton hospital = (ImageButton) mContext.findViewById(R.id.hospital);
+        ImageButton medical = (ImageButton) mContext.findViewById(R.id.hospital);
+        ImageButton burial = (ImageButton) mContext.findViewById(R.id.hospital);
+        ImageButton petshop = (ImageButton) mContext.findViewById(R.id.hospital);
+        ImageButton shelter = (ImageButton) mContext.findViewById(R.id.hospital);
 
-    public void onClick(View view) {
-        Intent intent = new Intent(mContext.getApplicationContext(), PharmParser_hospital.class);
-    }
+        View.OnClickListener listener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                switch (v.getId()) {
+                    case R.id.hospital:
+                        startActivity(new Intent("com.example.caps_project1.PharmParser_hospital"));
+                        break;
+                    case R.id.medical:
+                        break;
+                    case R.id.burial:
+                        break;
+                    case R.id.petshop:
+                        break;
+                    case R.id.shelter:
+                        break;
+                }
+            }
+        };
 
+        hospital.setOnClickListener(listener);
+        medical.setOnClickListener(listener);
+        burial.setOnClickListener(listener);
+        petshop.setOnClickListener(listener);
+        shelter.setOnClickListener(listener);
+
+    }
     //  여기부터
     //  지도생성
 

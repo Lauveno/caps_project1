@@ -71,8 +71,4 @@ public class PharmParser_hospital {
         }
         return url;
     }
-
-    public static void main(String[] args) {
-        new PharmParser_hospital();
-    }
 }
