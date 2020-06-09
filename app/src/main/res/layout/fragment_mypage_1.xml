@@ -58,7 +58,9 @@
                     android:layout_marginLeft="67dp"
                     android:layout_marginTop="30dp"
                     android:layout_toRightOf="@id/iv_profile"
-                    android:text="userName" />
+                    android:textStyle="bold"
+
+                    />
 
             </RelativeLayout>
 
@@ -118,7 +120,8 @@
                 android:layout_marginBottom="1.2dp"
                 android:background="@color/colorWhite"
                 android:stateListAnimator="@null"
-                android:text="회원정보수정" />
+                android:text="회원정보수정"
+                />
 
             <View
                 android:layout_width="match_parent"

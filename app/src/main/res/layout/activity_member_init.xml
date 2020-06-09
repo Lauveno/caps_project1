@@ -27,17 +27,17 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"
             android:ems="10"
-            android:hint="@string/name"
+            android:hint="펫 이름"
             android:inputType="textPersonName|text" />
 
         <EditText
-            android:id="@+id/phoneEditText"
+            android:id="@+id/genderEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"
             android:ems="10"
-            android:hint="@string/phone"
-            android:inputType="phone" />
+            android:hint="성별 ( 여성 / 남성 )"
+            android:inputType="" />
 
         <EditText
             android:id="@+id/birthEditText"
