@@ -1,12 +1,12 @@
 package com.example.caps_project1;
 
 
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserFactory;
+
 import java.io.BufferedInputStream;
 import java.net.URL;
 import java.util.ArrayList;
-
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserFactory;
 
 public class PharmParser_hospital {
 
