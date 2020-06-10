@@ -56,6 +56,8 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
     private FragmentActivity mContext;
     private Context context;
 
+    ArrayList<PharmDTO_hospital> arrayList;
+
     private static final String TAG = MapActivity.class.getSimpleName();
     private GoogleMap mMap;
     private MapView mapView = null;
@@ -90,22 +92,22 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-        StrictMode.setThreadPolicy(policy);
+        mContext.setContentView(R.layout.activity_map);
 
         ImageButton hospital = (ImageButton) mContext.findViewById(R.id.hospital);
-        ImageButton medical = (ImageButton) mContext.findViewById(R.id.hospital);
-        ImageButton burial = (ImageButton) mContext.findViewById(R.id.hospital);
-        ImageButton petshop = (ImageButton) mContext.findViewById(R.id.hospital);
-        ImageButton shelter = (ImageButton) mContext.findViewById(R.id.hospital);
+        ImageButton medical = (ImageButton) mContext.findViewById(R.id.medical);
+        ImageButton burial = (ImageButton) mContext.findViewById(R.id.burial);
+        final ImageButton petshop = (ImageButton) mContext.findViewById(R.id.petshop);
+        ImageButton shelter = (ImageButton) mContext.findViewById(R.id.shelter);
+
+        final ArrayList<PharmDTO_hospital> pharmDTO_hospitals;
 
         View.OnClickListener listener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 switch (v.getId()) {
                     case R.id.hospital:
-                        startActivity(new Intent("com.example.caps_project1.PharmParser_hospital"));
+                        pharmDTO_hospitals = (ArrayList<PharmDTO_hospital>)getIntent().getSerialixableExtra("")
                         break;
                     case R.id.medical:
                         break;
@@ -126,6 +128,7 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
         shelter.setOnClickListener(listener);
 
     }
+
     //  여기부터
     //  지도생성
 
@@ -211,6 +214,43 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
         updateLocationUI();
 
         getDeviceLocation();
+
+        //동물병원 마커 추가
+
+        for(int i=0; i<arrayList.size(); i++) {
+            Location location = addrToPoint(context, arrayList.get(i).getAddress());
+            LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+            MarkerOptions markerOptions = new MarkerOptions();
+            markerOptions.position(latLng);
+            mMap.addMarker(markerOptions);
+        }
+    }
+
+    public static Location addrToPoint(Context context) {
+        Location location = new Location("");
+        Geocoder geocoder = new Geocoder(context);
+        List<Address> addresses = null;
+
+        if(addresses != null) {
+            for(int i=0; i<addresses.size();i++) {
+                Address lating = addresses.get(i);
+                location.setLatitude(lating.getLatitude());
+                location.setLongitude(lating.getLongitude());
+            }
+        }
+        return location;
+    }
+
+    mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener()) {
+        public void onInfoWindowClick(Marker marker) {
+            String marker_number = null;
+            for(int i=0; i<arrayList.size(); i++) {
+                if(arrayList.get(i).findIndex(marker.getTitle() != null)) {
+                    marker_number = arrayList.get(i).findIndex(marker.getTitle());
+                }
+            }
+            final int mar
+        }
     }
 
     private void updateLocationUI() {
@@ -327,23 +367,6 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
 
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLng(currentLatLng);
         mMap.moveCamera(cameraUpdate);
-
-        PharmParser_hospital pharmParser_hospital = new PharmParser_hospital();
-        ArrayList<PharmDTO_hospital> list = null;
-        try {
-            list = pharmParser_hospital.apiParserSearch();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        for(PharmDTO_hospital entity : list) {
-            MarkerOptions options = new MarkerOptions();
-            options.title(entity.getLocality());
-            options.title(entity.getName());
-            options.icon(BitmapDescriptorFactory.fromResource(R.drawable.placeholder));
-
-            mMap.addMarker(options);
-        }
     }
 
     private void getDeviceLocation() {
