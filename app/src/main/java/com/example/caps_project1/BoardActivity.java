@@ -64,8 +64,6 @@ public class BoardActivity extends Fragment {
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         mContext = context;
-        mDataset.add(new Board("제목1","사람1", "내용블라블라"));
-        mDataset.add(new Board("제목2","사람2", "내용블라블라"));
         BoardActivity.boardData task = new BoardActivity.boardData();
         task.execute();
     }
@@ -94,6 +92,7 @@ public class BoardActivity extends Fragment {
             @Override
             public  void onClick(View view){
                 writeUpdate();
+
             }
 
             private void writeUpdate() {
@@ -109,6 +108,7 @@ public class BoardActivity extends Fragment {
                 } else {
                     Toast.makeText(getActivity(), "내용을 입력하세요.", Toast.LENGTH_SHORT).show();
                 }
+                clearEdit();
             }
 
             private void uploader(WriteInfo writeInfo) {
@@ -127,12 +127,21 @@ public class BoardActivity extends Fragment {
                             }
                         });
             }
+            public void clearEdit(){
+                EditText editText = (EditText)view.findViewById(R.id.board_title);
+                EditText editText2 = (EditText)view.findViewById(R.id.board_content);
 
+                String emptytext="";
+
+                editText.setText(emptytext);
+                editText2.setText(emptytext);
+
+            }
         });
-
 
         return view;
     }
+
 
     private class boardData extends AsyncTask<Void, Void, ArrayList<Board>> {
 
@@ -148,12 +157,7 @@ public class BoardActivity extends Fragment {
         @Override
         protected ArrayList<Board> doInBackground(Void... voids) {
             try{
-
-                mDataset.add(new Board("제목1","사람1", "내용블라블라"));
-
-                mDataset.add(new Board("제목1","사람1", "내용블라블라"));
-
-                mDataset.add(new Board("제목1","사람1", "내용블라블라"));
+                mDataset.add(new Board("제목3","내용블라블라", "익명"));
 
             }catch (Exception e){
                 e.printStackTrace();
