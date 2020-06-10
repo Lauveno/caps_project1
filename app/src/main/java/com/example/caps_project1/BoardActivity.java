@@ -4,9 +4,12 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -15,8 +18,15 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.caps_project1.database.WriteInfo;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 
@@ -37,8 +47,8 @@ public class BoardActivity extends Fragment {
     private BDAdapter mAdapter;
     private Context mContext;
     private Board mBoard; //data class
-    // private FirebaseUser user;
-
+    private FirebaseUser user;
+    private FirebaseFirestore db;
     public BoardActivity() {
         // Required empty public constructor
     }
@@ -54,8 +64,6 @@ public class BoardActivity extends Fragment {
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         mContext = context;
-        mDataset.add(new Board("제목1","사람1", "내용블라블라"));
-        mDataset.add(new Board("제목2","사람2", "내용블라블라"));
         BoardActivity.boardData task = new BoardActivity.boardData();
         task.execute();
     }
@@ -75,53 +83,66 @@ public class BoardActivity extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view =  inflater.inflate(R.layout.activity_board,container,false);
+        final View view =  inflater.inflate(R.layout.activity_board,container,false);
         bdRecyclerView = (RecyclerView) view.findViewById(R.id.my_recycler_view_board);
-        return view;
-        // findViewById(R.id.board_btn).setOnClickListener(OnClickListener);
-    }
-    /* 게시물 작성 시 Firebase의 Cloud Firestore에 작성된 게시글의 정보를 저장한다.
-        View.OnClickListener onClickListener = new View.OnClickListener() {
+
+
+        Button button = (Button) view.findViewById(R.id.board_btn);
+        button.setOnClickListener(new Button.OnClickListener(){
             @Override
-            public void onClick(View v) {
-                if (v.getId() == R.id.board_btn) {
-                    writeUpdate();
+            public  void onClick(View view){
+                writeUpdate();
+
+            }
+
+            private void writeUpdate() {
+                String title = ((EditText) view.findViewById(R.id.board_title)).getText().toString();
+                String Contents = ((EditText) view.findViewById(R.id.board_content)).getText().toString();
+
+                if (title.length() > 1 && Contents.length() > 1) {
+                    user = FirebaseAuth.getInstance().getCurrentUser();
+                    WriteInfo writeInfo = new WriteInfo(title, Contents, user.getUid());
+                    uploader(writeInfo);
+                    Toast.makeText(getActivity(), "게시글이 등록되었습니다.", Toast.LENGTH_SHORT).show();
+
+                } else {
+                    Toast.makeText(getActivity(), "내용을 입력하세요.", Toast.LENGTH_SHORT).show();
                 }
+                clearEdit();
             }
-        };
 
-        private void writeUpdate() {
-            final String title = ((EditText) findViewById(R.id.board_title)).getText().toString();
-            final String Contents = ((EditText) findViewById(R.id.board_content)).getText().toString();
-
-
-            if (title.length() > 1 && Contents.length() > 1) {
-                user = FirebaseAuth.getInstance().getCurrentUser();
-                WriteInfo writeInfo = new WriteInfo(title, Contents, user.getUid());
-                uploader(writeInfo);
-
-            } else {
-                Toast.makeText(BoardActivity.this, "내용을 입력하세요.", Toast.LENGTH_SHORT).show();
+            private void uploader(WriteInfo writeInfo) {
+                db = FirebaseFirestore.getInstance();
+                db.collection("posts").add(writeInfo)
+                        .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                            @Override
+                            public void onSuccess(DocumentReference documentReference) {
+                                Log.w(TAG, "DocumentSnapshot written with ID: " + documentReference.getId());
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.w(TAG, "Error adding document", e);
+                            }
+                        });
             }
-        }
+            public void clearEdit(){
+                EditText editText = (EditText)view.findViewById(R.id.board_title);
+                EditText editText2 = (EditText)view.findViewById(R.id.board_content);
 
-        private void uploader(WriteInfo writeInfo){
-            FirebaseFirestore db = FirebaseFirestore.getInstance();
-            db.collection("posts").add(writeInfo)
-                    .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                        @Override
-                        public void onSuccess(DocumentReference documentReference) {
-                            Log.w(TAG, "DocumentSnapshot written with ID: " + documentReference.getId());
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Log.w(TAG, "Error adding document", e);
-                        }
-                    });
-        }
-    */
+                String emptytext="";
+
+                editText.setText(emptytext);
+                editText2.setText(emptytext);
+
+            }
+        });
+
+        return view;
+    }
+
+
     private class boardData extends AsyncTask<Void, Void, ArrayList<Board>> {
 
         private ProgressDialog progressDialog;
@@ -136,12 +157,7 @@ public class BoardActivity extends Fragment {
         @Override
         protected ArrayList<Board> doInBackground(Void... voids) {
             try{
-
-                mDataset.add(new Board("제목1","사람1", "내용블라블라"));
-
-                mDataset.add(new Board("제목1","사람1", "내용블라블라"));
-
-                mDataset.add(new Board("제목1","사람1", "내용블라블라"));
+                mDataset.add(new Board("제목3","내용블라블라", "익명"));
 
             }catch (Exception e){
                 e.printStackTrace();
