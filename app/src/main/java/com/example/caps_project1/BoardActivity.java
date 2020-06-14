@@ -64,7 +64,7 @@ public class BoardActivity extends Fragment {
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         mContext = context;
-        BoardActivity.boardData task = new BoardActivity.boardData();
+        boardData task = new boardData();
         task.execute();
     }
 
@@ -139,6 +139,11 @@ public class BoardActivity extends Fragment {
             }
         });
 
+        //방금 입력한 내용 db에 들어간거 버튼 누르면 그것도 목록에 나와야 함. 목록 업데이트
+//        public void ReadUpdate(){
+//
+//        }
+
         return view;
     }
 
@@ -158,6 +163,7 @@ public class BoardActivity extends Fragment {
         protected ArrayList<Board> doInBackground(Void... voids) {
             try{
                 mDataset.add(new Board("제목3","내용블라블라", "익명"));
+                //database 게시글 가져와야 함
 
             }catch (Exception e){
                 e.printStackTrace();
@@ -180,8 +186,6 @@ public class BoardActivity extends Fragment {
             bdRecyclerView.setHasFixedSize(true);
             bdRecyclerView.setAdapter(mAdapter);
         }
-
-
     }
 
 }
