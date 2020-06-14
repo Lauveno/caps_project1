@@ -1,13 +1,11 @@
 package com.example.caps_project1;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,21 +19,19 @@ import org.xmlpull.v1.XmlPullParserFactory;
 public class PharmParser_hospital extends AppCompatActivity{
     final String TAG = "MapActivity";
 
-    private ArrayList<PharmDTO_object> hospital = xml_parse(hospital.xml);
-    private ArrayList<PharmDTO_object> burial = new ArrayList<PharmDTO_object>();
-
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        ArrayList<PharmDTO_object> hospitals = xml_parse();
+        ArrayList<PharmDTO_object> arrayList = xml_parse();
         Intent intent = new Intent(PharmParser_hospital.this, MapActivity.class);
-        intent.putExtra("PharmDTO_hospital", hospitals);
+        intent.putExtra("PharmDTO_object", arrayList);
         startActivity(intent);
     }
 
     private ArrayList<PharmDTO_object> xml_parse() {
-        InputStream inputStream_object = getResources().getRaw(R.raw.hospital);
-        InputStreamReader inputStreamReader = new InputStreamReader(inputStream_object);
+        ArrayList<PharmDTO_object> hospitals = new ArrayList<PharmDTO_object>();
+        InputStream inputStream = getResources().openRawResource(R.raw.hospital);
+        InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
         BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
 
         XmlPullParserFactory xmlPullParserFactory = null;
@@ -104,7 +100,7 @@ public class PharmParser_hospital extends AppCompatActivity{
             try {
                 bufferedReader.close();
                 inputStreamReader.close();
-                inputStream_object.close();
+                inputStream.close();
             } catch (Exception e2) {
                 e2.printStackTrace();
             }

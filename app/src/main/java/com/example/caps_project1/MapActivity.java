@@ -139,6 +139,41 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
 
     }
 
+    private String getJsonString() {
+        String json = "";
+        AssetManager assetManager = getResources().getAssets();
+        try {
+            InputStream inputStream = assetManager.open("hospital.json");
+            int fileSize = inputStream.available();
+
+            byte[] buffer = new byte[fileSize];
+            inputStream.read(buffer);
+            inputStream.close();
+
+            json = new String(buffer, "UTF-8");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return json;
+    }
+
+    private void jsonParsing(String json) {
+        try {
+            JsonObject jsonObject = new JsonObject(json);
+            JsonArray hospitalArray = jsonObject.getAsJsonArray();
+
+            for(int i=0; i<hospitalArray.length(); i++) {
+                JsonObject object = hospitalArray.getAsJsonObject(i);
+                PharmDTO_object pharmDTO_object = new PharmDTO_object();
+
+                pharmDTO_object.setLocality(object.getAsString("SIGUN_NM"));
+                pharmDTO_object.setName(object.getAsString("BIZPLC_NM"));
+
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
 
     //  여기부터
     //  지도생성
