@@ -1,74 +1,114 @@
 package com.example.caps_project1;
 
+import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
+import android.util.Log;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import java.io.BufferedInputStream;
-import java.net.URL;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
-public class PharmParser_hospital {
+public class PharmParser_hospital extends AppCompatActivity{
+    final String TAG = "MapActivity";
 
-    public final static String PHARM_URL = "https://openapi.gg.go.kr/Animalhosptl";
-    public final static String SIGUM_NM = "용인시";
+    private ArrayList<PharmDTO_object> hospital = xml_parse(hospital.xml);
+    private ArrayList<PharmDTO_object> burial = new ArrayList<PharmDTO_object>();
 
-    public PharmParser_hospital() {
-        try {
-            apiParserSearch();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        ArrayList<PharmDTO_object> hospitals = xml_parse();
+        Intent intent = new Intent(PharmParser_hospital.this, MapActivity.class);
+        intent.putExtra("PharmDTO_hospital", hospitals);
+        startActivity(intent);
     }
 
-    public ArrayList<PharmDTO_hospital> apiParserSearch() throws Exception {
-        URL url = new URL(getURLParam(null));
+    private ArrayList<PharmDTO_object> xml_parse() {
+        InputStream inputStream_object = getResources().getRaw(R.raw.hospital);
+        InputStreamReader inputStreamReader = new InputStreamReader(inputStream_object);
+        BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
 
-        XmlPullParserFactory xmlPullParserFactory = XmlPullParserFactory.newInstance();
-        xmlPullParserFactory.setNamespaceAware(true);
-        XmlPullParser xmlPullParser = xmlPullParserFactory.newPullParser();
-        BufferedInputStream bufferedInputStream = new BufferedInputStream(url.openStream());
-        xmlPullParser.setInput(bufferedInputStream, "utf-8");
+        XmlPullParserFactory xmlPullParserFactory = null;
+        XmlPullParser xmlPullParser = null;
 
-        String tag = null;
-        int event_type = xmlPullParser.getEventType();
+        try {
+            xmlPullParserFactory = XmlPullParserFactory.newInstance();
+            xmlPullParser = xmlPullParserFactory.newPullParser();
+            xmlPullParser.setInput(bufferedReader);
 
-        ArrayList<PharmDTO_hospital> list = new ArrayList<PharmDTO_hospital>();
+            PharmDTO_object pharmDTO_object = null;
+            int eventType = xmlPullParser.getEventType();
 
-        String locality = null, name = null;
-        while (event_type != XmlPullParser.END_DOCUMENT) {
-            if (event_type == XmlPullParser.START_TAG) {
-                tag = xmlPullParser.getName();
-            } else if (event_type == xmlPullParser.TEXT) {
-                //병원 주소
-                if (tag.equals("SIGUN_NM")) {
-                    locality = xmlPullParser.getText();
-                    System.out.println(SIGUM_NM);
-                } else if (tag.equals("BLZPLC_NM")) {
-                    name = xmlPullParser.getText();
+            while(eventType != XmlPullParser.END_DOCUMENT) {
+                switch (eventType) {
+                    case XmlPullParser.START_DOCUMENT:
+                        Log.i(TAG, "xml start");
+                        break;
+                    case XmlPullParser.START_TAG:
+                        String startTag = xmlPullParser.getName();
+                        Log.i(TAG, "Start TAG : " + startTag);
+                        if(startTag.equals("row")) {
+                            pharmDTO_object = new PharmDTO_object();
+                            Log.d(TAG, "DTO 추가");
+                        }
+                        //시군명
+                        else if(startTag.equals("SIGUN_NM")) {
+                            pharmDTO_object.setLocality(xmlPullParser.nextText());
+                        }
+                        //사업장명
+                        else if(startTag.equals("BIZPLC_NM") || startTag.equals("ENTRPS_NM")) {
+                            pharmDTO_object.setName(xmlPullParser.nextText());
+                        }
+                        //영업상태명
+                        else if(startTag.equals("BSN_STATE_NM")) {
+                            pharmDTO_object.setState(xmlPullParser.nextText());
+                        }
+                        //전화번호
+                        else if(startTag.equals("LOCPLC_FACLT_TELNO_DTLS") || startTag.equals("TELNO") || startTag.equals("ENTRPS_TELNO")) {
+                            pharmDTO_object.setNumber(xmlPullParser.nextText());
+                        }
+                        //도로명주소
+                        else if(startTag.equals("REFINE_ROADNM_ADDR")) {
+                            pharmDTO_object.setAddress(xmlPullParser.nextText());
+                        }
+                        break;
+                    case XmlPullParser.END_TAG:
+                        String endTag = xmlPullParser.getName();
+                        Log.i(TAG, "End TAG : " + endTag);
+                        if(endTag.equals("row")) {
+                            hospitals.add(pharmDTO_object);
+                        }
+                        break;
                 }
-            } else if (event_type == XmlPullParser.END_TAG) {
-                tag = xmlPullParser.getName();
-                if (tag.equals("row")) {
-                    PharmDTO_hospital entity = new PharmDTO_hospital();
-                    entity.setLocality(String.valueOf(locality));
-                    entity.setName(name);
-
-                    list.add(entity);
+                try {
+                    eventType = xmlPullParser.next();
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
             }
-            event_type = xmlPullParser.next();
+        } catch (XmlPullParserException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                bufferedReader.close();
+                inputStreamReader.close();
+                inputStream_object.close();
+            } catch (Exception e2) {
+                e2.printStackTrace();
+            }
         }
-        System.out.println(list.size());
-
-        return list;
-    }
-
-    private String getURLParam(String search) {
-        String url = PHARM_URL+"?SIGUN_NM="+SIGUM_NM;
-        if(search != null) {
-            url = url+"&BLZPLC_NM"+search;
-        }
-        return url;
+        return hospitals;
     }
 }

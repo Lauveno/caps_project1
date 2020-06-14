@@ -1,9 +1,11 @@
 package com.example.caps_project1;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.AssetManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -40,10 +42,18 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+
+import org.json.JSONException;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.StringReader;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -54,7 +64,11 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
     private FragmentActivity mContext;
     private Context context;
 
-    ArrayList<PharmDTO_hospital> arrayList;
+    private ArrayList<PharmDTO_object> hospital;
+    private ArrayList<PharmDTO_object> burial;
+    private ArrayList<PharmDTO_object> medical;
+    private ArrayList<PharmDTO_object> petshop;
+    private ArrayList<PharmDTO_object> shelter;
 
     private static final String TAG = MapActivity.class.getSimpleName();
     private GoogleMap mMap;
@@ -95,17 +109,14 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
         ImageButton hospital = (ImageButton) mContext.findViewById(R.id.hospital);
         ImageButton medical = (ImageButton) mContext.findViewById(R.id.medical);
         ImageButton burial = (ImageButton) mContext.findViewById(R.id.burial);
-        final ImageButton petshop = (ImageButton) mContext.findViewById(R.id.petshop);
+        ImageButton petshop = (ImageButton) mContext.findViewById(R.id.petshop);
         ImageButton shelter = (ImageButton) mContext.findViewById(R.id.shelter);
-
-        final ArrayList<PharmDTO_hospital> pharmDTO_hospitals;
 
         View.OnClickListener listener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 switch (v.getId()) {
                     case R.id.hospital:
-                        pharmDTO_hospitals = (ArrayList<PharmDTO_hospital>)getIntent().getSerialixableExtra("")
                         break;
                     case R.id.medical:
                         break;
@@ -117,6 +128,7 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
                         break;
                 }
             }
+
         };
 
         hospital.setOnClickListener(listener);
@@ -126,6 +138,7 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
         shelter.setOnClickListener(listener);
 
     }
+
 
     //  여기부터
     //  지도생성
@@ -213,20 +226,18 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
 
         getDeviceLocation();
 
-        //동물병원 마커 추가
-
+        //마커생성
         for(int i=0; i<arrayList.size(); i++) {
             Location location = addrToPoint(context, arrayList.get(i).getAddress());
             LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
             MarkerOptions markerOptions = new MarkerOptions();
             markerOptions.position(latLng);
-            mMap.addMarker(markerOptions);
+            Marker marker = mMap.addMarker(markerOptions);
         }
     }
 
-    public static Location addrToPoint(Context context) {
+    public static Location addrToPoint(Context context, String address) {
         Location location = new Location("");
-        Geocoder geocoder = new Geocoder(context);
         List<Address> addresses = null;
 
         if(addresses != null) {
@@ -237,18 +248,6 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
             }
         }
         return location;
-    }
-
-    mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener()) {
-        public void onInfoWindowClick(Marker marker) {
-            String marker_number = null;
-            for(int i=0; i<arrayList.size(); i++) {
-                if(arrayList.get(i).findIndex(marker.getTitle() != null)) {
-                    marker_number = arrayList.get(i).findIndex(marker.getTitle());
-                }
-            }
-            final int mar
-        }
     }
 
     private void updateLocationUI() {
