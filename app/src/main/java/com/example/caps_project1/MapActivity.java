@@ -105,7 +105,6 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
             public void onClick(View v) {
                 switch (v.getId()) {
                     case R.id.hospital:
-                        startActivity(new Intent("com.example.caps_project1.PharmParser_hospital"));
                         break;
                     case R.id.medical:
                         break;
@@ -328,23 +327,9 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLng(currentLatLng);
         mMap.moveCamera(cameraUpdate);
 
-        PharmParser_hospital pharmParser_hospital = new PharmParser_hospital();
-        ArrayList<PharmDTO_hospital> list = null;
-        try {
-            list = pharmParser_hospital.apiParserSearch();
-        } catch (Exception e) {
-            e.printStackTrace();
+
         }
 
-        for(PharmDTO_hospital entity : list) {
-            MarkerOptions options = new MarkerOptions();
-            options.title(entity.getLocality());
-            options.title(entity.getName());
-            options.icon(BitmapDescriptorFactory.fromResource(R.drawable.placeholder));
-
-            mMap.addMarker(options);
-        }
-    }
 
     private void getDeviceLocation() {
         try {
