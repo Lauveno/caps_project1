@@ -1,5 +1,6 @@
 package com.example.caps_project1;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -67,7 +68,7 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
 
     private static final int GPS_ENABLE_REQUEST_CODE = 2001;
     private static final int UPDATE_INTERVAL_MS = 1000 * 60 * 1;  // 1분 단위 시간 갱신
-    private static final int FASTEST_UPDATE_INTERVAL_MS = 1000 * 30 ; // 30초 단위로 화면 갱신
+    private static final int FASTEST_UPDATE_INTERVAL_MS = 1000 * 30; // 30초 단위로 화면 갱신
 
     private static final String KEY_CAMERA_POSITION = "camera_position";
     private static final String KEY_LOCATION = "location";
@@ -77,7 +78,7 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
 
     @Override
     public void onAttach(Activity activity) { // Fragment 가 Activity에 attach 될 때 호출된다.
-        mContext =(FragmentActivity) activity;
+        mContext = (FragmentActivity) activity;
         super.onAttach(activity);
     }
 
@@ -95,9 +96,9 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
             mCurrentLocation = savedInstanceState.getParcelable(KEY_LOCATION);
             CameraPosition mCameraPosition = savedInstanceState.getParcelable(KEY_CAMERA_POSITION);
         }
-        View layout =  inflater.inflate(R.layout.activity_map,container,false);
-        mapView = (MapView)layout.findViewById(R.id.map);
-        if(mapView != null) {
+        View layout = inflater.inflate(R.layout.activity_map, container, false);
+        mapView = (MapView) layout.findViewById(R.id.map);
+        if (mapView != null) {
             mapView.onCreate(savedInstanceState);
         }
         mapView.getMapAsync(this);
@@ -185,7 +186,7 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
                 mCurrentLocation = null;
                 getLocationPermission();
             }
-        } catch (SecurityException e)  {
+        } catch (SecurityException e) {
             Log.e("Exception: %s", e.getMessage());
         }
     }
@@ -207,20 +208,20 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
 
     String getCurrentAddress(LatLng latlng) {
         // 위치 정보와 지역으로부터 주소 문자열을 구한다.
-        List<Address> addressList = null ;
-        Geocoder geocoder = new Geocoder( mContext, Locale.getDefault());
+        List<Address> addressList = null;
+        Geocoder geocoder = new Geocoder(mContext, Locale.getDefault());
 
         // 지오코더를 이용하여 주소 리스트를 구한다.
         try {
-            addressList = geocoder.getFromLocation(latlng.latitude,latlng.longitude,1);
+            addressList = geocoder.getFromLocation(latlng.latitude, latlng.longitude, 1);
         } catch (IOException e) {
-            Toast. makeText( mContext, "위치로부터 주소를 인식할 수 없습니다. 네트워크가 연결되어 있는지 확인해 주세요.", Toast.LENGTH_SHORT ).show();
+            Toast.makeText(mContext, "위치로부터 주소를 인식할 수 없습니다. 네트워크가 연결되어 있는지 확인해 주세요.", Toast.LENGTH_SHORT).show();
             e.printStackTrace();
-            return "주소 인식 불가" ;
+            return "주소 인식 불가";
         }
 
         if (addressList.size() < 1) { // 주소 리스트가 비어있는지 비어 있으면
-            return "해당 위치에 주소 없음" ;
+            return "해당 위치에 주소 없음";
         }
 
         // 주소를 담는 문자열을 생성하고 리턴
@@ -262,7 +263,7 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
 
     };
 
-    private String CurrentTime(){
+    private String CurrentTime() {
         Date today = new Date();
         SimpleDateFormat date = new SimpleDateFormat("yyyy/MM/dd");
         SimpleDateFormat time = new SimpleDateFormat("hh:mm:ss a");
@@ -291,7 +292,7 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
             if (mLocationPermissionGranted) {
                 mFusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper());
             }
-        } catch (SecurityException e)  {
+        } catch (SecurityException e) {
             Log.e("Exception: %s", e.getMessage());
         }
     }
@@ -355,6 +356,16 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
         mapView.onResume();
         if (mLocationPermissionGranted) {
             Log.d(TAG, "onResume : requestLocationUpdates");
+            if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                return;
+            }
             mFusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, null);
             if (mMap!=null)
                 mMap.setMyLocationEnabled(true);

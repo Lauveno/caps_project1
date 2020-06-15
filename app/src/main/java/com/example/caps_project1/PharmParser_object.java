@@ -16,14 +16,14 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
-public class PharmParser_hospital extends AppCompatActivity{
+public class PharmParser_object extends AppCompatActivity{
     final String TAG = "MapActivity";
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         ArrayList<PharmDTO_object> arrayList = xml_parse();
-        Intent intent = new Intent(PharmParser_hospital.this, MapActivity.class);
+        Intent intent = new Intent(PharmParser_object.this, MapActivity.class);
         intent.putExtra("PharmDTO_object", arrayList);
         startActivity(intent);
     }
