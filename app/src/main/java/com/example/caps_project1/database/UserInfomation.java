@@ -1,26 +1,22 @@
 package com.example.caps_project1.database;
 
 public class UserInfomation {
-    private String name;
+
+    private String pet;
     private String phoneNumber;
     private String birth;
     private String address;
 
-    public UserInfomation(String name, String phoneNumber, String birth, String address) {
-        this.name = name;
+    public UserInfomation(String pet, String phoneNumber, String birth, String address) {
+
+        this.pet = pet;
         this.phoneNumber = phoneNumber;
         this.birth = birth;
         this.address = address;
     }
 
-
-    public String getName() {
-        return this.name;
-    }
-    public void setName(String name) {
-        this.name = name;
-    }
-
+    public String getPet() { return this.pet; }
+    public void setPet(String pet) { this.pet = pet; }
 
     public String getPhoneNumber() {
         return this.phoneNumber;

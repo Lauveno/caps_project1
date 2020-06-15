@@ -85,7 +85,7 @@ public class fragment_mypage_1 extends Fragment {
 
     private int id_view;
     private ImageView iv_profile;
-    private TextView tv_userName;
+    private TextView tv_userName, petName;
 
     private Context mContext;
 
@@ -135,10 +135,13 @@ public class fragment_mypage_1 extends Fragment {
         iv_profile = view.findViewById(R.id.iv_profile);
         tv_userName = view.findViewById(R.id.userName);
 
+
         if (user != null) {
             for (UserInfo profile : user.getProviderData()) {
                 String name = profile.getDisplayName();
+
                 tv_userName.setText(name);
+
             }
         }
 //
