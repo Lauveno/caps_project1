@@ -25,11 +25,13 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserInfo;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 
@@ -96,23 +98,21 @@ public class BoardActivity extends Fragment {
             @Override
             public  void onClick(View view){
                 writeUpdate();
-
+                clearEdit();
             }
 
             private void writeUpdate() {
                 String title = ((EditText) view.findViewById(R.id.board_title)).getText().toString();
                 String Contents = ((EditText) view.findViewById(R.id.board_content)).getText().toString();
 
-                if (title.length() > 1 && Contents.length() > 1) {
+                if (title.length() > 1 && Contents.length() > 1 ) {
                     user = FirebaseAuth.getInstance().getCurrentUser();
-                    WriteInfo writeInfo = new WriteInfo(title, Contents, user.getUid());
+                    WriteInfo writeInfo = new WriteInfo(title, Contents,user.getUid());
                     uploader(writeInfo);
                     Toast.makeText(getActivity(), "게시글이 등록되었습니다.", Toast.LENGTH_SHORT).show();
-
                 } else {
                     Toast.makeText(getActivity(), "내용을 입력하세요.", Toast.LENGTH_SHORT).show();
                 }
-                clearEdit();
             }
 
             private void uploader(WriteInfo writeInfo) {
@@ -164,22 +164,25 @@ public class BoardActivity extends Fragment {
             progressDialog.setMessage("게시글을 로딩중입니다");
             progressDialog.show();
         }
+
         @Override
         protected ArrayList<Board> doInBackground(Void... voids) {
             try{
                 mDataset.add(new Board("제목3","내용블라블라", "익명"));
                 //database 게시글 가져와야 함
-                DocumentReference contact = db.collection("posts").document();
-                contact.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if(task.isSuccessful()){
-                            //DocumentSnapshot doc = task.getResult();
-                            //Log.d("doc result : ",doc.toString());
-                            //doc.
-                        }
-                    }
-                });
+//                String doc_id = db.collection("posts").get();
+//                Log.d("doc result : ", String.valueOf(doc_id));
+//                DocumentReference contact = db.collection("posts").get();
+//                contact.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+//                        if(task.isSuccessful()){
+//                            //DocumentSnapshot doc = task.getResult();
+//                            //Log.d("doc result : ",doc.toString());
+//                            //doc.
+//                        }
+//                    }
+//                });
 
             }catch (Exception e){
                 e.printStackTrace();
