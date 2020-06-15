@@ -106,7 +106,7 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
         super.onCreate(savedInstanceState);
         mContext.setContentView(R.layout.activity_map);
 
-        ImageButton hospital = (ImageButton) mContext.findViewById(R.id.hospital);
+        final ImageButton hospital = (ImageButton) mContext.findViewById(R.id.hospital);
         ImageButton medical = (ImageButton) mContext.findViewById(R.id.medical);
         ImageButton burial = (ImageButton) mContext.findViewById(R.id.burial);
         ImageButton petshop = (ImageButton) mContext.findViewById(R.id.petshop);
@@ -117,6 +117,8 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
             public void onClick(View v) {
                 switch (v.getId()) {
                     case R.id.hospital:
+ //                       Intent intent = new Intent(MapActivity.this, PharmParser_hospital.class);
+ //                       startActivityForResult(intent, );
                         break;
                     case R.id.medical:
                         break;
@@ -137,42 +139,6 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
         petshop.setOnClickListener(listener);
         shelter.setOnClickListener(listener);
 
-    }
-
-    private String getJsonString() {
-        String json = "";
-        AssetManager assetManager = getResources().getAssets();
-        try {
-            InputStream inputStream = assetManager.open("hospital.json");
-            int fileSize = inputStream.available();
-
-            byte[] buffer = new byte[fileSize];
-            inputStream.read(buffer);
-            inputStream.close();
-
-            json = new String(buffer, "UTF-8");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return json;
-    }
-
-    private void jsonParsing(String json) {
-        try {
-            JsonObject jsonObject = new JsonObject(json);
-            JsonArray hospitalArray = jsonObject.getAsJsonArray();
-
-            for(int i=0; i<hospitalArray.length(); i++) {
-                JsonObject object = hospitalArray.getAsJsonObject(i);
-                PharmDTO_object pharmDTO_object = new PharmDTO_object();
-
-                pharmDTO_object.setLocality(object.getAsString("SIGUN_NM"));
-                pharmDTO_object.setName(object.getAsString("BIZPLC_NM"));
-
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
     }
 
     //  여기부터
@@ -261,14 +227,14 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
 
         getDeviceLocation();
 
-        //마커생성
+    /*    //마커생성
         for(int i=0; i<arrayList.size(); i++) {
             Location location = addrToPoint(context, arrayList.get(i).getAddress());
             LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
             MarkerOptions markerOptions = new MarkerOptions();
             markerOptions.position(latLng);
             Marker marker = mMap.addMarker(markerOptions);
-        }
+        }*/
     }
 
     public static Location addrToPoint(Context context, String address) {
