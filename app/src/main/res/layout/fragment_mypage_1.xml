@@ -3,14 +3,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragment_mypage_1">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".fragment_mypage_1"
+    >
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#e9ecef"
         android:gravity="center"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        >
 
 
         <LinearLayout
@@ -19,7 +22,9 @@
             android:layout_gravity="center"
             android:layout_margin="10dp"
             android:background="@drawable/border"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            >
+
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -27,40 +32,93 @@
                     android:id="@+id/tv_myprofile"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:gravity="left"
                     android:layout_marginBottom="10dp"
+                    android:gravity="left"
                     android:paddingLeft="10dp"
                     android:text="내 프로필"
                     android:textSize="20sp"
-                    android:textStyle="bold"
-                    />
-                <View
-                    android:id="@+id/view"
-                    android:layout_width="match_parent"
-                    android:layout_below="@id/tv_myprofile"
-                    android:layout_height="4px"
-                    android:background="#e9ecef" />
-                <ImageView
-                    android:id="@+id/iv_profile"
-                    android:layout_width="120dp"
-                    android:layout_height="120dp"
-                    android:layout_below="@+id/tv_myprofile"
-                    android:layout_marginTop="5dp"
-                    android:src="@drawable/user" />
+                    android:textStyle="bold" />
 
-                <TextView
-                    android:id="@+id/userName"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_alignTop="@id/view"
+                <androidx.cardview.widget.CardView
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    app:cardCornerRadius="75dp"
+                    app:cardElevation="10dp"
+                    android:layout_centerInParent="true"
+                    android:layout_marginTop="150dp">
+                    <ImageView
+                        android:id="@+id/iv_profile"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_below="@+id/tv_myprofile"
+                        android:src="@drawable/user2"
+                        android:background="@color/gray1"
+                        android:scaleType="centerCrop" />
+                </androidx.cardview.widget.CardView>
 
-                    android:layout_marginLeft="67dp"
-                    android:layout_marginTop="30dp"
-                    android:layout_toRightOf="@id/iv_profile"
-                    android:textStyle="bold"
+<!--                <View-->
+<!--                    android:id="@+id/view"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="4px"-->
+<!--                    android:layout_below="@id/tv_myprofile"-->
+<!--                    android:background="#e9ecef" />-->
 
-                    />
+
+
+<!--                <LinearLayout-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_centerVertical="true"-->
+<!--                    android:orientation="vertical">-->
+
+                    <LinearLayout
+                        android:id="@+id/linear1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:layout_marginTop="240dp">
+                        <TextView
+                            android:id="@+id/userName"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+
+                            android:hint="아영"
+                            android:textStyle="bold"
+                            android:textSize="17sp"
+                            android:fontFamily="@font/app_main_font"
+                            />
+                    </LinearLayout>
+
+<!--                    <LinearLayout-->
+<!--                        android:id="@+id/linear2"-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:layout_below="@id/linear1"-->
+<!--                        android:layout_marginLeft="200dp"-->
+<!--                        android:layout_marginTop="10dp"-->
+<!--                        android:orientation="horizontal">-->
+
+<!--                        <TextView-->
+<!--                            android:layout_width="wrap_content"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:layout_toLeftOf="@id/userName"-->
+<!--                            android:text="내 펫 : "-->
+<!--                            android:textSize="15sp"-->
+<!--                            android:textStyle="bold" />-->
+
+<!--                        <TextView-->
+<!--                            android:id="@+id/petName"-->
+<!--                            android:layout_width="wrap_content"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:layout_marginLeft="5dp"-->
+<!--                            android:hint="내 펫"-->
+<!--                            android:textStyle="bold" />-->
+<!--                    </LinearLayout>-->
+
+<!--                </LinearLayout>-->
+
+
+
 
             </RelativeLayout>
 
@@ -90,24 +148,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="4px"
                 android:background="#e9ecef" />
-
-            <!--<Button
-                android:id="@+id/changeEmail"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="left|center"
-
-                android:layout_gravity="center"
-                android:layout_marginLeft="10dp"
-                android:layout_marginBottom="1.2dp"
-                android:background="@color/colorWhite"
-                android:stateListAnimator="@null"
-                android:text="이메일 수정" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="2px"
-                android:background="#e9ecef" /> -->
 
             <Button
                 android:id="@+id/changeProfile"
@@ -165,28 +205,28 @@
                 android:background="#e9ecef" />
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_margin="10dp"
-            android:background="@drawable/border"
-            android:orientation="vertical">
+<!--        <LinearLayout-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_gravity="center"-->
+<!--            android:layout_margin="10dp"-->
+<!--            android:background="@drawable/border"-->
+<!--            android:orientation="vertical">-->
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginLeft="10dp"
-                android:layout_marginBottom="15dp"
-                android:text="탈퇴"
-                android:textSize="20sp"
-                android:textStyle="bold" />
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="4px"
-                android:background="#e9ecef" />
-        </LinearLayout>
+<!--            <TextView-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_gravity="center"-->
+<!--                android:layout_marginLeft="10dp"-->
+<!--                android:layout_marginBottom="15dp"-->
+<!--                android:text="탈퇴"-->
+<!--                android:textSize="20sp"-->
+<!--                android:textStyle="bold" />-->
+<!--            <View-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="4px"-->
+<!--                android:background="#e9ecef" />-->
+<!--        </LinearLayout>-->
 
     </LinearLayout>
 </FrameLayout>

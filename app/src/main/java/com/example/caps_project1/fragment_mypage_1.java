@@ -85,7 +85,7 @@ public class fragment_mypage_1 extends Fragment {
 
     private int id_view;
     private ImageView iv_profile;
-    private TextView tv_userName;
+    private TextView tv_userName, petName;
 
     private Context mContext;
 
@@ -128,6 +128,9 @@ public class fragment_mypage_1 extends Fragment {
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance();
         DatabaseReference myRootRef = FirebaseDatabase.getInstance().getReference();
+
+
+        // 수정해야함
         mDBReference = myRootRef.child("users").child("uid");
         user = FirebaseAuth.getInstance().getCurrentUser();
 
@@ -135,10 +138,13 @@ public class fragment_mypage_1 extends Fragment {
         iv_profile = view.findViewById(R.id.iv_profile);
         tv_userName = view.findViewById(R.id.userName);
 
+
         if (user != null) {
             for (UserInfo profile : user.getProviderData()) {
                 String name = profile.getDisplayName();
+
                 tv_userName.setText(name);
+
             }
         }
 //
