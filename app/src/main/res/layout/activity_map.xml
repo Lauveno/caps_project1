@@ -16,66 +16,71 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="bottom|center_horizontal"
-        android:orientation="horizontal" >
+        android:gravity="top|right"
+        android:orientation="vertical" >
 
         <ImageButton
             android:id="@+id/hospital"
-            android:layout_width="71dp"
-            android:layout_height="71dp"
-            android:layout_gravity="center_horizontal"
+            android:layout_width="55dp"
+            android:layout_height="55dp"
+            android:layout_gravity="center_vertical"
             android:adjustViewBounds="true"
             android:background="@android:color/transparent"
+            android:layout_marginTop="10dp"
             android:padding="0dp"
             android:scaleType="fitCenter"
             android:src="@drawable/button_hospital" />
 
         <ImageButton
             android:id="@+id/medical"
-            android:layout_width="71dp"
-            android:layout_height="71dp"
-            android:layout_gravity="center_horizontal"
+            android:layout_width="55dp"
+            android:layout_height="55dp"
+            android:layout_gravity="center_vertical"
             android:adjustViewBounds="true"
             android:background="@android:color/transparent"
+            android:layout_marginTop="10dp"
             android:padding="0dp"
             android:scaleType="fitCenter"
-            android:layout_toRightOf="@+id/hospital"
+            android:layout_below="@+id/hospital"
             android:src="@drawable/button_burial" />
 
         <ImageButton
             android:id="@+id/burial"
-            android:layout_width="71dp"
-            android:layout_height="71dp"
-            android:layout_gravity="center_horizontal"
+            android:layout_width="55dp"
+            android:layout_height="55dp"
+            android:layout_gravity="center_vertical"
             android:adjustViewBounds="true"
             android:background="@android:color/transparent"
+            android:layout_marginTop="10dp"
             android:padding="0dp"
             android:scaleType="fitStart"
-            android:layout_toRightOf="@+id/medical"
+            android:layout_below="@+id/medical"
             android:src="@drawable/button_medical" />
 
         <ImageButton
             android:id="@+id/petshop"
-            android:layout_width="71dp"
-            android:layout_height="71dp"
-            android:layout_gravity="center_horizontal"
+            android:layout_width="55dp"
+            android:layout_height="55dp"
+            android:layout_gravity="center_vertical"
+            android:layout_below="@+id/burial"
             android:adjustViewBounds="true"
             android:background="@android:color/transparent"
+            android:layout_marginTop="10dp"
             android:padding="0dp"
             android:scaleType="fitStart"
-            android:layout_toRightOf="@+id/burial"
             android:src="@drawable/button_petshop" />
 
         <ImageButton
             android:id="@+id/shelter"
-            android:layout_width="71dp"
-            android:layout_height="71dp"
+            android:layout_width="55dp"
+            android:layout_height="55dp"
             android:layout_gravity="center_horizontal"
             android:adjustViewBounds="true"
             android:background="@android:color/transparent"
+            android:layout_marginTop="10dp"
             android:padding="0dp"
             android:scaleType="fitStart"
-            android:layout_toRightOf="@id/petshop"
+            android:layout_below="@id/petshop"
             android:src="@drawable/button_shelter" />
 
     </RelativeLayout>

@@ -236,7 +236,7 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
             Marker marker = mMap.addMarker(markerOptions);
         }*/
     }
-
+/*
     public static Location addrToPoint(Context context, String address) {
         Location location = new Location("");
         List<Address> addresses = null;
@@ -250,6 +250,8 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
         }
         return location;
     }
+
+ */
 
     private void updateLocationUI() {
         if (mMap == null) {
@@ -464,5 +466,4 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
         super.onDestroy();
         mapView.onDestroy();
     }
-
 }
