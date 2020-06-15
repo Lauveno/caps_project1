@@ -128,6 +128,9 @@ public class fragment_mypage_1 extends Fragment {
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance();
         DatabaseReference myRootRef = FirebaseDatabase.getInstance().getReference();
+
+
+        // 수정해야함
         mDBReference = myRootRef.child("users").child("uid");
         user = FirebaseAuth.getInstance().getCurrentUser();
 
