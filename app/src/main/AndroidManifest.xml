@@ -13,7 +13,7 @@
     <uses-feature android:name="android:hardware.camera2" />
 
     <application
-        android:allowBackup="false"
+        android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="caps_project1"
         android:roundIcon="@mipmap/ic_launcher_round"
@@ -32,7 +32,7 @@
         
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyBCfdjHhgxiANuWw_Wv7qZMl8ZYfUK1QLk" />
+            android:value="AIzaSyA0o3-3EtVdOxp5IYtqw2Bqdpc4l8kUcZY" />
 
         <activity android:name=".LoginActivity">
             <intent-filter>

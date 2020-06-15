@@ -13,17 +13,15 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 
-import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -41,16 +39,9 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.libraries.places.api.Places;
-import com.google.android.libraries.places.api.model.Place;
-import com.google.android.libraries.places.api.net.PlacesClient;
-import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
-import com.google.android.libraries.places.widget.AutocompleteFragment;
-import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -94,42 +85,6 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // 초기화 해야 하는 리소스들을 여기서 초기화 해준다.
-        Button hospital = (Button) mContext.findViewById(R.id.hospital);
-        Button burial = (Button)mContext.findViewById(R.id.burial);
-        Button petshop = (Button)mContext.findViewById(R.id.petshop);
-        Button shelter = (Button)mContext.findViewById(R.id.shelter);
-        Button medical = (Button)mContext.findViewById(R.id.medical);
-
-        hospital.setOnClickListener(new Button.OnClickListener() {
-            public void onClick(View v) {
-
-            }
-        });
-
-        burial.setOnClickListener(new Button.OnClickListener() {
-            public void onClick(View v) {
-
-            }
-        });
-
-        petshop.setOnClickListener(new Button.OnClickListener() {
-            public void onClick(View v) {
-
-            }
-        });
-
-        shelter.setOnClickListener(new Button.OnClickListener() {
-            public void onClick(View v) {
-
-            }
-        });
-
-        medical.setOnClickListener(new Button.OnClickListener() {
-            public void onClick(View v) {
-
-            }
-        });
-
     }
 
     @Nullable
@@ -171,7 +126,6 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
                 Log.i(TAG, "An error occurred: " + status);
             }
         }); */
-
         return layout;
     }
 

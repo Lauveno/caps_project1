@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -37,18 +38,30 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.caps_project1.database.UserData;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserInfo;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+
+import org.jsoup.parser.Parser;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 
 
 public class fragment_mypage_1 extends Fragment {
@@ -57,11 +70,13 @@ public class fragment_mypage_1 extends Fragment {
     private FirebaseAuth mAuth;
     private FirebaseDatabase mDatabase;
     private DatabaseReference mDBReference;
+    private FirebaseUser user;
 
     private static final int REQUEST_CODE = 101;
     private static final int PERMISSON_CAMERA = 1111;
-    private static final int TAKE_PHOTO = 2222;
-    private static final int TAKE_ALBUM = 3333;
+    private static final int CAPTURE_IMAGE = 2222;
+    private static final int PICK_IMAGE = 3333;
+
     private static final int CROP_IMAGE = 4444;
 
     String mCurrentPhotoPath;
@@ -70,7 +85,7 @@ public class fragment_mypage_1 extends Fragment {
 
     private int id_view;
     private ImageView iv_profile;
-    private TextView tv_userName;
+    private TextView tv_userName, petName;
 
     private Context mContext;
 
@@ -100,36 +115,52 @@ public class fragment_mypage_1 extends Fragment {
         super.onCreate(savedInstanceState);
     }
 
+
+
     // onCreate : fragment가 생성될 때 호출되는 부분
     // onCreateView : onCreate 후에 화면을 구성할 때 호출
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+                             Bundle savedInstanceState  ) {
         View view = inflater.inflate(R.layout.fragment_mypage_1, container, false);
 
         // DatabaseReference 객체는 파아어베이스 데이터를 참조할 때 사용한다.
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance();
-        mDBReference = FirebaseDatabase.getInstance().getReference("uid");
+        DatabaseReference myRootRef = FirebaseDatabase.getInstance().getReference();
+
+
+        // 수정해야함
+        mDBReference = myRootRef.child("users").child("uid");
+        user = FirebaseAuth.getInstance().getCurrentUser();
+
 
         iv_profile = view.findViewById(R.id.iv_profile);
         tv_userName = view.findViewById(R.id.userName);
 
-        mDBReference.child("userName").addValueEventListener(new ValueEventListener() {
-            @Override
 
-            // dataSnapshot 에서 값을 꺼내올 수 있다.
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                String username = dataSnapshot.getValue(String.class);
-                tv_userName.setText(username);
-            }
+        if (user != null) {
+            for (UserInfo profile : user.getProviderData()) {
+                String name = profile.getDisplayName();
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
+                tv_userName.setText(name);
 
             }
-        });
-
+        }
+//
+//        mDBReference.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                String userName = dataSnapshot.getValue(String.class);
+//                tv_userName.setText(userName);
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//                // failed
+//                Log.w(this.getClass().getSimpleName(), databaseError.toException());
+//            }
+//        });
 
 
         // 이미지를 클릭 시 팝업메뉴가 먼저 나온다.
@@ -170,22 +201,28 @@ public class fragment_mypage_1 extends Fragment {
 //            }
 //        });
 
+        // 프로필 사진 클릭 이벤트
         iv_profile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 checkPermission();
-                Intent intent = new Intent();
 
-                // 구글 갤러리 접근
-                 intent.setType("image/*");
+                photoDialogRadio();
 
-                // 기기 기본 갤러리 접근
-//                intent.setType(MediaStore.Images.Media.CONTENT_TYPE);
-                intent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(intent, REQUEST_CODE);
+//                startActivityForResult(intent, REQUEST_CODE);
             }
         });
 
+
+        // 회원정보 수정
+        Button updateProfileButton = view.findViewById(R.id.changeProfile);
+        updateProfileButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startMemberInitActivity();
+
+            }
+        });
 
         // 로그아웃
         Button logoutButton = view.findViewById(R.id.logoutButton);
@@ -261,10 +298,39 @@ public class fragment_mypage_1 extends Fragment {
         builder.show();
     }
 
+    // 사진찍기 or 앨범 선택 다이얼로그
+    void photoDialogRadio() {
+        final CharSequence[] PhotoModels = {"GALLERY", "CAMERA"};
+        AlertDialog.Builder alt = new AlertDialog.Builder(mContext);
+
+        alt.setTitle("프로필 사진 설정하기");
+        alt.setSingleChoiceItems(PhotoModels, -1, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int item) {
+                Toast.makeText(mContext, PhotoModels[item] + " 선택 되었습니다.", Toast.LENGTH_SHORT).show();
+                if (item == 0) {
+                    // 갤러리
+                    Intent intent = new Intent();
+                    intent.setType("image/*");
+                    intent.setAction(Intent.ACTION_GET_CONTENT);
+                    startActivityForResult(intent, PICK_IMAGE);
+                    dialog.dismiss();
+                } else {
+                    // 사진 가져오기
+                    Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                    startActivityForResult(cameraIntent, CAPTURE_IMAGE);
+                    dialog.dismiss();
+                }
+            }
+        });
+
+        AlertDialog alert = alt.create();
+        alert.show();
+    }
+
 
     // ActivityCompat.checkSelfPermission : 카메라 및 외부 저장소 퍼미션 상태를 체크
     private void checkPermission() {
-
         String temp = "";
 
         // 파일 읽기 권한
@@ -280,8 +346,10 @@ public class fragment_mypage_1 extends Fragment {
         }
 
         if (TextUtils.isEmpty(temp) == false) {
-            ActivityCompat.requestPermissions(getActivity(), temp.trim().split(" ", 1), 1);
+            // 권한 요청
+            ActivityCompat.requestPermissions(getActivity(), temp.trim().split(" "), 1);
         } else {
+            // 허용 상태
             Toast.makeText(mContext, "권한을 모두 허용", Toast.LENGTH_SHORT).show();
         }
 
@@ -326,16 +394,15 @@ public class fragment_mypage_1 extends Fragment {
     // 권한에 대한 응답이 있을 때 작동하는 함수
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        Log.d(this.getClass().getSimpleName(), "onRequestPermissionResult");
 
-        // 권한 허용
-        if (requestCode == 1) {
-            int length = permissions.length;
-            for(int i=0; i<length; i++) {
-                if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
-                    Log.d("maypage", "권한 허용 : " + permissions[i]);
-            }
+        if (grantResults[0] == PackageManager.PERMISSION_GRANTED &&
+        grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+            Log.d(this.getClass().getSimpleName(), "Permission: " + permissions[0] + "was " + grantResults[0]);
         }
-//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
 //        if (requestCode == 0) {
 //            if (grantResults[0] == 0) {
 //                Toast.makeText(mContext, "카메라 권한 승인 완료", Toast.LENGTH_SHORT).show();
@@ -343,29 +410,43 @@ public class fragment_mypage_1 extends Fragment {
 //                Toast.makeText(mContext, "카메라 권한 승인 거절", Toast.LENGTH_SHORT).show();
 //
 //            }
-        }
-    }
 
 
+
+    // 갤러리 사진 가져온 결과를 비트맵으로 저장
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
+        super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == REQUEST_CODE && requestCode == Activity.RESULT_OK) {
+        if (requestCode == PICK_IMAGE && resultCode == Activity.RESULT_OK && data.getData() != null) {
+            try {
+                // 갤러리에서 이미지가 선택되면 <파일주소: url> 이 넘어감 == data.getData()
+                // String path 로 안받아져서 public String getPath(Uri uri){
+                //  String[] proj = {MediaStore.Images.Media.DATA};
+                //  CursorLoader cursorLoader = new CursorLoader(this, uri, proj, null, null, null);
+                // Cursor cursor = cursorLoader.loadInBackground(); int index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+                // cursor.moveToFirst(); return cursor.getString(index);
+                // }
+                Bitmap img = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(),
+                        data.getData());
+//                InputStream in = getActivity().getContentResolver().openInputStream(data.getData());
+//                Bitmap img = BitmapFactory.decodeStream(in);
+//                in.close();
 
-                try {
-                    InputStream in = getActivity().getContentResolver().openInputStream(data.getData());
+                // 이미지표시
+                iv_profile.setImageBitmap(img);
+//                imageURI = Uri.parse(data.getData() + "");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else if (requestCode == CAPTURE_IMAGE && resultCode == Activity.RESULT_OK && data.hasExtra("data")) {
+            Bitmap bitmap = (Bitmap) data.getExtras().get("data");
+            if (bitmap != null) {
+                iv_profile.setImageBitmap(bitmap);
 
-                    Bitmap img = BitmapFactory.decodeStream(in);
-                    in.close();
-                    iv_profile.setImageBitmap(img);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            } else if (requestCode == REQUEST_CODE  && requestCode == Activity.RESULT_CANCELED) {
-                Toast.makeText(mContext, "사진 선택 취소", Toast.LENGTH_SHORT).show();
             }
         }
+    }
 //        switch (requestCode) {
 //            case TAKE_PHOTO:
 //                if (requestCode == Activity.RESULT_OK) {
@@ -411,42 +492,42 @@ public class fragment_mypage_1 extends Fragment {
 //    }
 
     // 갤러리에 사진이 추가되고 선택할 수 있다.
-    private void getAlbum() {
-        Intent intent = new Intent(Intent.ACTION_PICK);
-
+//    private void getAlbum() {
+//        Intent intent = new Intent(Intent.ACTION_PICK);
+//
 //        intent.setType("image/*");
-        intent.setType(android.provider.MediaStore.Images.Media.CONTENT_TYPE);
-
-        startActivityForResult(intent, TAKE_ALBUM);
-    }
+//        intent.setType(android.provider.MediaStore.Images.Media.CONTENT_TYPE);
+//
+//        startActivityForResult(intent, TAKE_ALBUM);
+//    }
 
 
     // 사진 촬영 함수
-    private void captureCamera() {
-        String state = Environment.getExternalStorageState();
-        if (Environment.MEDIA_MOUNTED.equals(state)) {
-            Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-
-            if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
-                File photoFile = null;
-                try {
-                    photoFile = createImageFile();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                if (photoFile != null) {
-                    Uri providerUri = FileProvider.getUriForFile(mContext, getActivity().getPackageName(), photoFile);
-                    imageURI = providerUri;
-
-                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, providerUri);
-                    startActivityForResult(takePictureIntent, TAKE_PHOTO);
-                }
-            } else {
-                Toast.makeText(mContext, "접근 불가능 합니다", Toast.LENGTH_SHORT).show();
-                return;
-            }
-        }
-    }
+//    private void captureCamera() {
+//        String state = Environment.getExternalStorageState();
+//        if (Environment.MEDIA_MOUNTED.equals(state)) {
+//            Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//
+//            if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+//                File photoFile = null;
+//                try {
+//                    photoFile = createImageFile();
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//                if (photoFile != null) {
+//                    Uri providerUri = FileProvider.getUriForFile(mContext, getActivity().getPackageName(), photoFile);
+//                    imageURI = providerUri;
+//
+//                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, providerUri);
+//                    startActivityForResult(takePictureIntent, TAKE_PHOTO);
+//                }
+//            } else {
+//                Toast.makeText(mContext, "접근 불가능 합니다", Toast.LENGTH_SHORT).show();
+//                return;
+//            }
+//        }
+//    }
 
 
     // 촬영, 크롭된 사진에 대한 이미지 저장 함수
@@ -454,7 +535,7 @@ public class fragment_mypage_1 extends Fragment {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "JPEG_" + timeStamp + ".jpg";
         File imageFile = null;
-        File storageDir = new File(Environment.getExternalStorageDirectory() + "/Pictures");
+        File storageDir = new File (Environment.getExternalStorageDirectory() + "/Pictures");
 
         if (!storageDir.exists()) {
             storageDir.mkdir();
@@ -464,6 +545,13 @@ public class fragment_mypage_1 extends Fragment {
 
         return imageFile;
     }
+    private void saveFile() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.ENGLISH);
+        String filename = sdf.format(new Date());
+
+    }
+
+
 
 
     // 사진을 크롭하는 함수
@@ -496,6 +584,48 @@ public class fragment_mypage_1 extends Fragment {
         Intent intent = new Intent(getActivity(), LoginActivity.class);
         startActivity(intent);
     }
+    private void startMemberInitActivity() {
+        Intent intent = new Intent(getActivity(), MemberInitActivity.class);
+        startActivity(intent);
+    }
 
+
+    // save a jpeg
+    private static class ImageUpLoader implements Runnable {
+
+        private final Image mImage;
+        ImageUpLoader(Image image) {
+            mImage = image;
+        }
+
+        @Override
+        public void run() {
+            ByteBuffer buffer = mImage.getPlanes()[0].getBuffer();
+            byte[] bytes = new byte[buffer.remaining()];
+            buffer.get(bytes);
+
+            // Cloud Storage 파일 업로드
+            FirebaseStorage storage = FirebaseStorage.getInstance();
+            StorageReference storageRef = storage.getReference();
+            StorageReference mountainImageRef = storageRef.child("images/mountains.jpg");
+
+
+            // 메모리에서 업로드
+            UploadTask uploadTask = mountainImageRef.putBytes(bytes);
+            uploadTask.addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Log.e("실패", "실패");
+
+                }
+            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    Log.e("성공", "성공");
+                }
+            });
+        }
+    }
 
 }
+
