@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.caps_project1.database.UserData;
 import com.example.caps_project1.database.WriteInfo;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -31,6 +32,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
@@ -57,6 +59,7 @@ public class BoardActivity extends Fragment {
     private FirebaseFirestore db;
     public BoardActivity() {
         // Required empty public constructor
+        update();
     }
 
     public static BoardActivity newInstance(String param1, String param2) {
@@ -77,7 +80,6 @@ public class BoardActivity extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        mDataset.clear();
     }
 
     @Override
@@ -91,23 +93,50 @@ public class BoardActivity extends Fragment {
         // Inflate the layout for this fragment
         final View view =  inflater.inflate(R.layout.activity_board,container,false);
         bdRecyclerView = (RecyclerView) view.findViewById(R.id.my_recycler_view_board);
-
-
         Button button = (Button) view.findViewById(R.id.board_btn);
-        button.setOnClickListener(new Button.OnClickListener(){
+        button.setOnClickListener(new Button.OnClickListener() {
             @Override
-            public  void onClick(View view){
+            public void onClick(View view) {
                 writeUpdate();
                 clearEdit();
             }
 
             private void writeUpdate() {
-                String title = ((EditText) view.findViewById(R.id.board_title)).getText().toString();
-                String Contents = ((EditText) view.findViewById(R.id.board_content)).getText().toString();
+                final String title = ((EditText) view.findViewById(R.id.board_title)).getText().toString();
+                final String Contents = ((EditText) view.findViewById(R.id.board_content)).getText().toString();
 
-                if (title.length() > 1 && Contents.length() > 1 ) {
+                if (title.length() > 1 && Contents.length() > 1) {
                     user = FirebaseAuth.getInstance().getCurrentUser();
-                    WriteInfo writeInfo = new WriteInfo(title, Contents,user.getUid());
+                    assert user != null;
+
+                    db = FirebaseFirestore.getInstance();
+                    db.collection("users")
+                            .get()
+                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                    if (task.isSuccessful()) {
+                                        String user_name_doc="";
+                                        for (QueryDocumentSnapshot document : task.getResult()) {
+
+//                                Log.d("result : ", document.getId() + " => " + document.getData());
+//                                            String publisher == document.getData().get("name").toString()
+                                            if(user.getUid().equals(document.getId())){
+                                                user_name_doc = document.getData().get("name").toString();
+                                                Log.d("result : ",user_name_doc);
+//                                                uName[index] = user_name_doc;
+//                                                Log.d("result : ",uName[index]);
+                                            }
+                                        }
+                                        //Log.d("result : ",uName[0]);
+
+                                    } else {
+                                        Log.w("result : ", "Error getting documents.", task.getException());
+                                    }
+                                }
+                            });
+                    //user_name
+                    WriteInfo writeInfo = new WriteInfo(title, Contents, user.getUid());
                     uploader(writeInfo);
                     Toast.makeText(getActivity(), "게시글이 등록되었습니다.", Toast.LENGTH_SHORT).show();
                 } else {
@@ -130,25 +159,20 @@ public class BoardActivity extends Fragment {
                                 Log.w(TAG, "Error adding document", e);
                             }
                         });
-                mDataset.add(new Board(writeInfo.getTitle(),writeInfo.getContents(), writeInfo.getPublisher()));
+                mDataset.add(new Board(writeInfo.getTitle(), writeInfo.getContents(), writeInfo.getPublisher()));
             }
-            public void clearEdit(){
-                EditText editText = (EditText)view.findViewById(R.id.board_title);
-                EditText editText2 = (EditText)view.findViewById(R.id.board_content);
 
-                String emptytext="";
+            public void clearEdit() {
+                EditText editText = (EditText) view.findViewById(R.id.board_title);
+                EditText editText2 = (EditText) view.findViewById(R.id.board_content);
 
-                editText.setText(emptytext);
-                editText2.setText(emptytext);
+                String empty_text = "";
+
+                editText.setText(empty_text);
+                editText2.setText(empty_text);
 
             }
         });
-
-        //방금 입력한 내용 db에 들어간거 버튼 누르면 그것도 목록에 나와야 함. 목록 업데이트
-//        public void ReadUpdate(){
-//
-//        }
-
         return view;
     }
 
@@ -167,22 +191,29 @@ public class BoardActivity extends Fragment {
 
         @Override
         protected ArrayList<Board> doInBackground(Void... voids) {
-            try{
-                mDataset.add(new Board("제목3","내용블라블라", "익명"));
+            try {
                 //database 게시글 가져와야 함
-//                String doc_id = db.collection("posts").get();
-//                Log.d("doc result : ", String.valueOf(doc_id));
-//                DocumentReference contact = db.collection("posts").get();
-//                contact.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-//                    @Override
-//                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-//                        if(task.isSuccessful()){
-//                            //DocumentSnapshot doc = task.getResult();
-//                            //Log.d("doc result : ",doc.toString());
-//                            //doc.
-//                        }
-//                    }
-//                });
+//                db = FirebaseFirestore.getInstance();
+//                db.collection("posts")
+//                        .get()
+//                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+//                            @Override
+//                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+//                                if (task.isSuccessful()) {
+//                                    for (QueryDocumentSnapshot document : task.getResult()) {
+//                                        Log.d("result : ", document.getId() + " => " + document.getData());
+//                                        Log.d("result : ", document.getId() + " => " + document.getData().get("title"));
+//                                        String title = document.getData().get("title").toString();
+//                                        String content = document.getData().get("contents").toString();
+//                                        String publisher = document.getData().get("publisher").toString();
+//                                        Log.d("result : ", document.getId() + " => " + title);
+//                                        mDataset.add(new Board(title,content, publisher));
+//                                    }
+//                                } else {
+//                                    Log.w("result : ", "Error getting documents.", task.getException());
+//                                }
+//                            }
+//                        });
 
             }catch (Exception e){
                 e.printStackTrace();
@@ -195,8 +226,6 @@ public class BoardActivity extends Fragment {
             super.onPostExecute(board);
 
             progressDialog.dismiss();
-            Toast.makeText(getActivity(), "Complete", Toast.LENGTH_LONG).show();
-
             mAdapter = new BDAdapter(mDataset);
 
             RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
@@ -204,7 +233,36 @@ public class BoardActivity extends Fragment {
             bdRecyclerView.setItemAnimator(new DefaultItemAnimator());
             bdRecyclerView.setHasFixedSize(true);
             bdRecyclerView.setAdapter(mAdapter);
+
+            Toast.makeText(getActivity(), "Complete", Toast.LENGTH_LONG).show();
         }
+    }
+    public void update(){
+        mDataset.clear();
+        db = FirebaseFirestore.getInstance();
+        db.collection("posts")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            int index = 0;
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+//                                Log.d("result : ", document.getId() + " => " + document.getData());
+                                if(document.getData().get("publisher") != null){
+                                    String title = document.getData().get("title").toString();
+                                    String content = document.getData().get("contents").toString();
+                                    String publisher = document.getData().get("publisher").toString();
+                                    mDataset.add(new Board(title,content, publisher));
+                                    Log.d("result : ",String.valueOf(mDataset.get(index).getTitle()));
+                                    index++;
+                                }
+                            }
+                        } else {
+                            Log.w("result : ", "Error getting documents.", task.getException());
+                        }
+                    }
+                });
     }
 
 }
