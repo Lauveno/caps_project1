@@ -5,7 +5,7 @@ public class WriteInfo {
     private String Contents;
     private String publisher;
 
-    public WriteInfo(String title, String Contents) {
+    public WriteInfo(String title, String Contents, String publisher) {
         this.title = title;
         this.Contents = Contents;
         this.publisher = publisher;
