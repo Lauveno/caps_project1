@@ -19,13 +19,16 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.caps_project1.database.WriteInfo;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
@@ -47,6 +50,7 @@ public class BoardActivity extends Fragment {
     private BDAdapter mAdapter;
     private Context mContext;
     private Board mBoard; //data class
+    private ArrayList<String> docIdList = new ArrayList<>();;
     private FirebaseUser user;
     private FirebaseFirestore db;
     public BoardActivity() {
@@ -126,6 +130,7 @@ public class BoardActivity extends Fragment {
                                 Log.w(TAG, "Error adding document", e);
                             }
                         });
+                mDataset.add(new Board(writeInfo.getTitle(),writeInfo.getContents(), writeInfo.getPublisher()));
             }
             public void clearEdit(){
                 EditText editText = (EditText)view.findViewById(R.id.board_title);
@@ -164,6 +169,17 @@ public class BoardActivity extends Fragment {
             try{
                 mDataset.add(new Board("제목3","내용블라블라", "익명"));
                 //database 게시글 가져와야 함
+                DocumentReference contact = db.collection("posts").document();
+                contact.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if(task.isSuccessful()){
+                            //DocumentSnapshot doc = task.getResult();
+                            //Log.d("doc result : ",doc.toString());
+                            //doc.
+                        }
+                    }
+                });
 
             }catch (Exception e){
                 e.printStackTrace();
