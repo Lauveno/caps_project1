@@ -53,20 +53,15 @@ public class PasswordResetActivity extends AppCompatActivity {
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
                     if (task.isSuccessful()) {
-                        startToast("이메일을 보냈습니다.");
+                        Toast.makeText(PasswordResetActivity.this, "이메일을 보냈습니다.", Toast.LENGTH_SHORT).show();
                     }
                 }
             });
 
         } else {
-            startToast("이메일을 다시 입력해 주세요.");
+            Toast.makeText(PasswordResetActivity.this, "이메일을 다시 입력해 주세요.", Toast.LENGTH_SHORT).show();
         }
 
     }
-
-    private void startToast(String msg) {
-        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
-    }
-
 
 }

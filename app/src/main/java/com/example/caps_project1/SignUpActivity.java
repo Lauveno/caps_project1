@@ -21,8 +21,11 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.Objects;
 
 
 public class SignUpActivity extends AppCompatActivity {
@@ -30,9 +33,7 @@ public class SignUpActivity extends AppCompatActivity {
     private static final String TAG = "SignUpActivity";
     private EditText et_name, et_email, et_password, et_password_check, et_phone;
     private FirebaseAuth mAuth; // FirebaseAuth 인스턴스 선언
-    //private FirebaseDatabase database; // FirebaseDatabase 인스턴스 선언
-    private FirebaseFirestore db;
-    private FirebaseUser user;
+    private FirebaseDatabase database; // FirebaseDatabase 인스턴스 선언
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +41,13 @@ public class SignUpActivity extends AppCompatActivity {
         setContentView(R.layout.activity_signup);
 
         mAuth = FirebaseAuth.getInstance(); // FirebaseAuth 인스턴스 초기화
-        //database = FirebaseDatabase.getInstance(); // FirebaseDatabase 인스턴스 초기화
+        database = FirebaseDatabase.getInstance(); // FirebaseDatabase 인스턴스 초기화
+
+        et_name = findViewById(R.id.nameEditText);
+        et_email = findViewById(R.id.emailEditText);
+        et_password = findViewById(R.id.passwordEditText);
+        et_password_check = findViewById(R.id.passwordCheckEditText);
+        et_phone = findViewById(R.id.phoneEditText);
 
         Button signUpButton = findViewById(R.id.signUpButton);
         signUpButton.setOnClickListener(new View.OnClickListener() {
@@ -49,12 +56,6 @@ public class SignUpActivity extends AppCompatActivity {
                 signUp_Email();
             }
         });
-
-        et_name = findViewById(R.id.nameEditText);
-        et_email = findViewById(R.id.emailEditText);
-        et_password = findViewById(R.id.passwordEditText);
-        et_password_check = findViewById(R.id.passwordCheckEditText);
-        et_phone = findViewById(R.id.phoneEditText);
     }
 
     // 이메일 로그인
@@ -71,15 +72,17 @@ public class SignUpActivity extends AppCompatActivity {
                 // createUserWithEmailAndPassword : 비밀번호 기반의 계정을 생성
                 mAuth.createUserWithEmailAndPassword(email, password)
                         .addOnCompleteListener(SignUpActivity.this, new OnCompleteListener<AuthResult>() {
-                            @RequiresApi(api = Build.VERSION_CODES.KITKAT)
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 if (task.isSuccessful()) {
                                     // Firebase Realtime Database : 사용자 정보 (이메일, 페스워드 등) 읽어오기
-                                    db = FirebaseFirestore.getInstance();
-                                    user = FirebaseAuth.getInstance().getCurrentUser();
-                                    UserData userdata = new UserData(et_name.getText().toString(), et_email.getText().toString(), et_password.getText().toString(), et_phone.getText().toString(), user.getUid());
-                                    uploader(userdata);
+                                    UserData userdata = new UserData();
+                                    userdata.userName = et_name.getText().toString();
+                                    userdata.userEmail = et_email.getText().toString();
+                                    userdata.userPassword = et_password.getText().toString();
+                                    userdata.userPhoneNumber = et_phone.getText().toString();
+                                    String uid = Objects.requireNonNull(Objects.requireNonNull(task.getResult()).getUser()).getUid();
+                                    database.getReference().child("users").child(uid).setValue(userdata);
                                     Toast.makeText(SignUpActivity.this, "회원가입에 성공하였습니다.", Toast.LENGTH_SHORT).show();
                                     finish();
                                     startActivity(new Intent(getApplicationContext(), LoginActivity.class));
@@ -104,23 +107,6 @@ public class SignUpActivity extends AppCompatActivity {
                 Toast.makeText(SignUpActivity.this, "휴대폰 번호가 정확하지 않습니다.", Toast.LENGTH_SHORT).show();
             }
         }
-    }
-
-    private void uploader(UserData userdata) {
-        db.collection("New_users")
-                .add(userdata)
-                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                    @Override
-                    public void onSuccess(DocumentReference documentReference) {
-                        Log.d(TAG, "DocumentSnapshot written with ID: " + documentReference.getId());
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w(TAG, "Error adding document", e);
-                    }
-                });
     }
 
     @Override
