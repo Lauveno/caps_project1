@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.Contacts;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,13 +13,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import com.example.caps_project1.database.UserData;
 import com.example.caps_project1.database.WriteInfo;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -26,16 +20,21 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.UserInfo;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -54,7 +53,7 @@ public class BoardActivity extends Fragment {
     private BDAdapter mAdapter;
     private Context mContext;
     private Board mBoard; //data class
-    private ArrayList<String> docIdList = new ArrayList<>();;
+    private HashMap<String, String> UIdList = new HashMap<String, String>();;
     private FirebaseUser user;
     private FirebaseFirestore db;
     public BoardActivity() {
@@ -104,39 +103,12 @@ public class BoardActivity extends Fragment {
             private void writeUpdate() {
                 final String title = ((EditText) view.findViewById(R.id.board_title)).getText().toString();
                 final String Contents = ((EditText) view.findViewById(R.id.board_content)).getText().toString();
+                user = FirebaseAuth.getInstance().getCurrentUser();
+                assert user != null;
 
                 if (title.length() > 1 && Contents.length() > 1) {
-                    user = FirebaseAuth.getInstance().getCurrentUser();
-                    assert user != null;
 
-                    db = FirebaseFirestore.getInstance();
-                    db.collection("users")
-                            .get()
-                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                @Override
-                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                    if (task.isSuccessful()) {
-                                        String user_name_doc="";
-                                        for (QueryDocumentSnapshot document : task.getResult()) {
-
-//                                Log.d("result : ", document.getId() + " => " + document.getData());
-//                                            String publisher == document.getData().get("name").toString()
-                                            if(user.getUid().equals(document.getId())){
-                                                user_name_doc = document.getData().get("name").toString();
-                                                Log.d("result : ",user_name_doc);
-//                                                uName[index] = user_name_doc;
-//                                                Log.d("result : ",uName[index]);
-                                            }
-                                        }
-                                        //Log.d("result : ",uName[0]);
-
-                                    } else {
-                                        Log.w("result : ", "Error getting documents.", task.getException());
-                                    }
-                                }
-                            });
-                    //user_name
-                    WriteInfo writeInfo = new WriteInfo(title, Contents, user.getUid());
+                    WriteInfo writeInfo = new WriteInfo(title, Contents, UIdList.get(user.getUid()));
                     uploader(writeInfo);
                     Toast.makeText(getActivity(), "게시글이 등록되었습니다.", Toast.LENGTH_SHORT).show();
                 } else {
@@ -239,6 +211,10 @@ public class BoardActivity extends Fragment {
     }
     public void update(){
         mDataset.clear();
+        user = FirebaseAuth.getInstance().getCurrentUser();
+        assert user != null;
+        user.getUid();
+        Log.d("result : ",user.getUid());
         db = FirebaseFirestore.getInstance();
         db.collection("posts")
                 .get()
@@ -248,7 +224,6 @@ public class BoardActivity extends Fragment {
                         if (task.isSuccessful()) {
                             int index = 0;
                             for (QueryDocumentSnapshot document : task.getResult()) {
-//                                Log.d("result : ", document.getId() + " => " + document.getData());
                                 if(document.getData().get("publisher") != null){
                                     String title = document.getData().get("title").toString();
                                     String content = document.getData().get("contents").toString();
@@ -256,6 +231,28 @@ public class BoardActivity extends Fragment {
                                     mDataset.add(new Board(title,content, publisher));
                                     Log.d("result : ",String.valueOf(mDataset.get(index).getTitle()));
                                     index++;
+                                }
+                            }
+                        } else {
+                            Log.w("result : ", "Error getting documents.", task.getException());
+                        }
+                    }
+                });
+        db = FirebaseFirestore.getInstance();
+        db.collection("users")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            String user_name_doc="";
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                if(user.getUid().equals(document.getId())){
+
+                                    user_name_doc = document.getData().get("name").toString();
+                                    Log.d("result : ",user_name_doc);
+                                    UIdList.put(user.getUid(),user_name_doc);
+
                                 }
                             }
                         } else {
