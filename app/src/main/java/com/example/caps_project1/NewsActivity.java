@@ -24,7 +24,6 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link NewsActivity#newInstance} factory method to

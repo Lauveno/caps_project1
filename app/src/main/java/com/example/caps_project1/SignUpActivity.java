@@ -3,6 +3,7 @@ package com.example.caps_project1;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -14,17 +15,22 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.caps_project1.database.UserData;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.Objects;
 
 
 public class SignUpActivity extends AppCompatActivity {
 
-    //private static final String TAG = "SignUpActivity";
+    private static final String TAG = "SignUpActivity";
     private EditText et_name, et_email, et_password, et_password_check, et_phone;
     private FirebaseAuth mAuth; // FirebaseAuth 인스턴스 선언
     private FirebaseDatabase database; // FirebaseDatabase 인스턴스 선언
@@ -37,6 +43,12 @@ public class SignUpActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance(); // FirebaseAuth 인스턴스 초기화
         database = FirebaseDatabase.getInstance(); // FirebaseDatabase 인스턴스 초기화
 
+        et_name = findViewById(R.id.nameEditText);
+        et_email = findViewById(R.id.emailEditText);
+        et_password = findViewById(R.id.passwordEditText);
+        et_password_check = findViewById(R.id.passwordCheckEditText);
+        et_phone = findViewById(R.id.phoneEditText);
+
         Button signUpButton = findViewById(R.id.signUpButton);
         signUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -44,12 +56,6 @@ public class SignUpActivity extends AppCompatActivity {
                 signUp_Email();
             }
         });
-
-        et_name = findViewById(R.id.nameEditText);
-        et_email = findViewById(R.id.emailEditText);
-        et_password = findViewById(R.id.passwordEditText);
-        et_password_check = findViewById(R.id.passwordCheckEditText);
-        et_phone = findViewById(R.id.phoneEditText);
     }
 
     // 이메일 로그인
@@ -66,7 +72,6 @@ public class SignUpActivity extends AppCompatActivity {
                 // createUserWithEmailAndPassword : 비밀번호 기반의 계정을 생성
                 mAuth.createUserWithEmailAndPassword(email, password)
                         .addOnCompleteListener(SignUpActivity.this, new OnCompleteListener<AuthResult>() {
-                            @RequiresApi(api = Build.VERSION_CODES.KITKAT)
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 if (task.isSuccessful()) {
@@ -103,6 +108,7 @@ public class SignUpActivity extends AppCompatActivity {
             }
         }
     }
+
     @Override
     public void onStart() {
         super.onStart();

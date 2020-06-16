@@ -10,8 +10,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-feature android:name="android:hardware.camera"
-        android:required="true"/>
+    <uses-feature android:name="android:hardware.camera2" />
 
     <application
         android:allowBackup="true"
@@ -33,7 +32,7 @@
         
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyAub0aeo_iouTldE0_rpTGqJjbAlIpbJMs" />
+            android:value="AIzaSyA0o3-3EtVdOxp5IYtqw2Bqdpc4l8kUcZY" />
 
         <activity android:name=".LoginActivity">
             <intent-filter>
@@ -45,6 +44,5 @@
         <activity android:name=".MainActivity" />
         <activity android:name=".SignUpActivity" />
         <activity android:name=".PasswordResetActivity" />
-        <activity android:name=".MemberInitActivity" />
     </application>
 </manifest>
