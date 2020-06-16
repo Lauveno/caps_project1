@@ -1,19 +1,23 @@
 package com.example.caps_project1;
 
-import android.Manifest;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.AssetManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Looper;
+import android.os.StrictMode;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -38,11 +42,20 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+
+import org.json.JSONException;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.StringReader;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -50,6 +63,14 @@ import java.util.Locale;
 public class MapActivity extends Fragment implements OnMapReadyCallback {
     private FragmentActivity mContext;
     private Context context;
+
+    public PharmParser_object pharmParser_object;
+
+    private ArrayList<PharmDTO_object> hospital;
+    private ArrayList<PharmDTO_object> burial;
+    private ArrayList<PharmDTO_object> medical;
+    private ArrayList<PharmDTO_object> petshop;
+    private ArrayList<PharmDTO_object> shelter;
 
     private static final String TAG = MapActivity.class.getSimpleName();
     private GoogleMap mMap;
@@ -85,8 +106,54 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // 초기화 해야 하는 리소스들을 여기서 초기화 해준다.
+        mContext.setContentView(R.layout.activity_map);
+
+        final ImageButton hospital = (ImageButton) mContext.findViewById(R.id.hospital);
+        ImageButton medical = (ImageButton) mContext.findViewById(R.id.medical);
+        ImageButton burial = (ImageButton) mContext.findViewById(R.id.burial);
+        ImageButton petshop = (ImageButton) mContext.findViewById(R.id.petshop);
+        ImageButton shelter = (ImageButton) mContext.findViewById(R.id.shelter);
+
+        View.OnClickListener listener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                switch (v.getId()) {
+                    case R.id.hospital:
+                        PharmParser_object pharmParser_object = new PharmParser_object("hospital", "용인시");
+
+                        ArrayList<PharmDTO_object> pharmDTO_objects = pharmParser_object.FileOpen();
+
+                        for(PharmDTO_object location : pharmDTO_objects) {
+                            MarkerOptions markerOptions = new MarkerOptions();
+                            LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+                            markerOptions.position(latLng);
+
+                            mMap.addMarker(markerOptions);
+                        }
+                        break;
+                    case R.id.medical:
+                        break;
+                    case R.id.burial:
+                        break;
+                    case R.id.petshop:
+                        break;
+                    case R.id.shelter:
+                        break;
+                }
+            }
+
+        };
+
+        hospital.setOnClickListener(listener);
+        medical.setOnClickListener(listener);
+        burial.setOnClickListener(listener);
+        petshop.setOnClickListener(listener);
+        shelter.setOnClickListener(listener);
+
     }
+
+    //  여기부터
+    //  지도생성
 
     @Nullable
     @Override
@@ -170,7 +237,32 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
         updateLocationUI();
 
         getDeviceLocation();
+
+    /*    //마커생성
+        for(int i=0; i<arrayList.size(); i++) {
+            Location location = addrToPoint(context, arrayList.get(i).getAddress());
+            LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+            MarkerOptions markerOptions = new MarkerOptions();
+            markerOptions.position(latLng);
+            Marker marker = mMap.addMarker(markerOptions);
+        }*/
     }
+/*
+    public static Location addrToPoint(Context context, String address) {
+        Location location = new Location("");
+        List<Address> addresses = null;
+
+        if(addresses != null) {
+            for(int i=0; i<addresses.size();i++) {
+                Address lating = addresses.get(i);
+                location.setLatitude(lating.getLatitude());
+                location.setLongitude(lating.getLongitude());
+            }
+        }
+        return location;
+    }
+
+ */
 
     private void updateLocationUI() {
         if (mMap == null) {
@@ -270,6 +362,7 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
         return time.format(today);
     }
 
+    //현재위치 마커표시
     public void setCurrentLocation(Location location, String markerTitle, String markerSnippet) {
         if (currentMarker != null) currentMarker.remove();
 
@@ -286,6 +379,7 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLng(currentLatLng);
         mMap.moveCamera(cameraUpdate);
     }
+
 
     private void getDeviceLocation() {
         try {
@@ -354,22 +448,6 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
     public void onResume() { // 유저에게 Fragment가 보여지고, 유저와 상호작용이 가능하게 되는 부분
         super.onResume();
         mapView.onResume();
-        if (mLocationPermissionGranted) {
-            Log.d(TAG, "onResume : requestLocationUpdates");
-            if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                // TODO: Consider calling
-                //    ActivityCompat#requestPermissions
-                // here to request the missing permissions, and then overriding
-                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                //                                          int[] grantResults)
-                // to handle the case where the user grants the permission. See the documentation
-                // for ActivityCompat#requestPermissions for more details.
-                return;
-            }
-            mFusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, null);
-            if (mMap!=null)
-                mMap.setMyLocationEnabled(true);
-        }
     }
 
     @Override
@@ -399,5 +477,4 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
         super.onDestroy();
         mapView.onDestroy();
     }
-
 }

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -12,23 +11,95 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:name="com.google.android.gms.maps.MapFragment" />
-<!--
-    <androidx.cardview.widget.CardView
-        xmlns:card_view="http://schemas.android.com/apk/res-auto"
-        android:name="@+id/card_view"
-        android:layout_width="400dp"
-        android:layout_height="40dp"
-        android:layout_gravity="center"
-        card_view:cardCornerRadius="4dp">
 
-        <fragment
-            android:id="@+id/autocomplete_fragment"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#fff"
-            android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment" >
-        </fragment>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="top|right"
+        android:orientation="vertical" >
 
-    </androidx.cardview.widget.CardView>
--->
+        <ImageButton
+            android:id="@+id/hospital"
+            android:layout_width="55dp"
+            android:layout_height="55dp"
+            android:layout_gravity="center_vertical"
+            android:adjustViewBounds="true"
+            android:background="@android:color/transparent"
+            android:layout_marginTop="10dp"
+            android:padding="0dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/button_hospital" />
+
+        <ImageButton
+            android:id="@+id/medical"
+            android:layout_width="55dp"
+            android:layout_height="55dp"
+            android:layout_gravity="center_vertical"
+            android:adjustViewBounds="true"
+            android:background="@android:color/transparent"
+            android:layout_marginTop="10dp"
+            android:padding="0dp"
+            android:scaleType="fitCenter"
+            android:layout_below="@+id/hospital"
+            android:src="@drawable/button_medical" />
+
+        <ImageButton
+            android:id="@+id/burial"
+            android:layout_width="55dp"
+            android:layout_height="55dp"
+            android:layout_gravity="center_vertical"
+            android:adjustViewBounds="true"
+            android:background="@android:color/transparent"
+            android:layout_marginTop="10dp"
+            android:padding="0dp"
+            android:scaleType="fitStart"
+            android:layout_below="@+id/medical"
+            android:src="@drawable/button_burial" />
+
+        <ImageButton
+            android:id="@+id/petshop"
+            android:layout_width="55dp"
+            android:layout_height="55dp"
+            android:layout_gravity="center_vertical"
+            android:layout_below="@+id/burial"
+            android:adjustViewBounds="true"
+            android:background="@android:color/transparent"
+            android:layout_marginTop="10dp"
+            android:padding="0dp"
+            android:scaleType="fitStart"
+            android:src="@drawable/button_petshop" />
+
+        <ImageButton
+            android:id="@+id/shelter"
+            android:layout_width="55dp"
+            android:layout_height="55dp"
+            android:layout_gravity="center_horizontal"
+            android:adjustViewBounds="true"
+            android:background="@android:color/transparent"
+            android:layout_marginTop="10dp"
+            android:padding="0dp"
+            android:scaleType="fitStart"
+            android:layout_below="@id/petshop"
+            android:src="@drawable/button_shelter" />
+
+    </RelativeLayout>
+    <!--
+        <androidx.cardview.widget.CardView
+            xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            android:name="@+id/card_view"
+            android:layout_width="400dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
+            card_view:cardCornerRadius="4dp">
+
+            <fragment
+                android:id="@+id/autocomplete_fragment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#fff"
+                android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment" >
+            </fragment>
+
+        </androidx.cardview.widget.CardView>
+    -->
 </RelativeLayout>
