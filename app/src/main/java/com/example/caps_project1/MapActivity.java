@@ -3,6 +3,7 @@ package com.example.caps_project1;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
@@ -66,12 +67,6 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
 
     public PharmParser_object pharmParser_object;
 
-    private ArrayList<PharmDTO_object> hospital;
-    private ArrayList<PharmDTO_object> burial;
-    private ArrayList<PharmDTO_object> medical;
-    private ArrayList<PharmDTO_object> petshop;
-    private ArrayList<PharmDTO_object> shelter;
-
     private static final String TAG = MapActivity.class.getSimpleName();
     private GoogleMap mMap;
     private MapView mapView = null;
@@ -81,10 +76,12 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
     private FusedLocationProviderClient mFusedLocationProviderClient; // Deprecated된 FusedLocationApi를 대체
     private LocationRequest locationRequest;
     private Location mCurrentLocation;
+
     private final LatLng mDefaultLocation = new LatLng(37.56, 126.97);
     private static final int DEFAULT_ZOOM = 15;
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private boolean mLocationPermissionGranted;
+
     private static final int GPS_ENABLE_REQUEST_CODE = 2001;
     private static final int UPDATE_INTERVAL_MS = 1000 * 60 * 1;  // 1분 단위 시간 갱신
     private static final int FASTEST_UPDATE_INTERVAL_MS = 1000 * 30; // 30초 단위로 화면 갱신
@@ -104,52 +101,6 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mContext.setContentView(R.layout.activity_map);
-
-        final ImageButton hospital = (ImageButton) mContext.findViewById(R.id.hospital);
-        ImageButton medical = (ImageButton) mContext.findViewById(R.id.medical);
-        ImageButton burial = (ImageButton) mContext.findViewById(R.id.burial);
-        ImageButton petshop = (ImageButton) mContext.findViewById(R.id.petshop);
-        ImageButton shelter = (ImageButton) mContext.findViewById(R.id.shelter);
-
-        View.OnClickListener listener = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                switch (v.getId()) {
-                    case R.id.hospital:
-                        //                       Intent intent = new Intent(MapActivity.this, PharmParser_hospital.class);
-                        //                       startActivityForResult(intent, );
-
-                        PharmParser_object pharmParser_object = new PharmParser_object("hospital", "용인시");
-
-                        ArrayList<PharmDTO_object> pharmDTO_objects = pharmParser_object.FileOpen();
-
-                        for(PharmDTO_object location : pharmDTO_objects) {
-                            MarkerOptions markerOptions = new MarkerOptions();
-                            LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-                            markerOptions.position(latLng);
-
-                            mMap.addMarker(markerOptions);
-                        }
-                        break;
-                    case R.id.medical:
-                        break;
-                    case R.id.burial:
-                        break;
-                    case R.id.petshop:
-                        break;
-                    case R.id.shelter:
-                        break;
-                }
-            }
-
-        };
-
-        hospital.setOnClickListener(listener);
-        medical.setOnClickListener(listener);
-        burial.setOnClickListener(listener);
-        petshop.setOnClickListener(listener);
-        shelter.setOnClickListener(listener);
 
     }
 
@@ -171,30 +122,26 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
         }
         mapView.getMapAsync(this);
 
-       /* if(!Places.isInitialized()) {
-            Places.initialize(context, "AIzaSyA0o3-3EtVdOxp5IYtqw2Bqdpc4l8kUcZY");
-        }
+        ViewGroup viewGroup = (ViewGroup) inflater.inflate(R.layout.activity_map, container, false);
 
-        AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
-               getActivity().getSupportFragmentManager().findFragmentById(R.id.autocomplete_fragment);
-
-        autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME));
-        autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
-
+        ImageButton hospital = viewGroup.findViewById(R.id.hospital);
+        hospital.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onPlaceSelected(@NonNull Place place) {
-                Location location = new Location("");
-                location.setLatitude(place.getLatLng().latitude);
-                location.setLongitude(place.getLatLng().longitude);
+            public void onClick(View v) {
+                PharmParser_object pharmParser_object = new PharmParser_object("hospital", "용인시");
 
-                setCurrentLocation(location, place.getName(), place.getAddress());
-            }
+                ArrayList<PharmDTO_object> pharmDTO_objects = pharmParser_object.FileOpen();
 
-            @Override
-            public void onError(@NonNull Status status) {
-                Log.i(TAG, "An error occurred: " + status);
+                for (PharmDTO_object location : pharmDTO_objects) {
+                    MarkerOptions markerOptions = new MarkerOptions();
+                    LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+                    markerOptions.position(latLng);
+
+                    mMap.addMarker(markerOptions);
+                }
             }
-        }); */
+        });
+
         return layout;
     }
 

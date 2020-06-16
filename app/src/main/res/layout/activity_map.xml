@@ -12,32 +12,34 @@
         android:layout_height="match_parent"
         android:name="com.google.android.gms.maps.MapFragment" />
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="top|right"
-        android:orientation="vertical" >
+        android:gravity="center_horizontal"
+        android:orientation="horizontal" >
 
         <ImageButton
             android:id="@+id/hospital"
-            android:layout_width="55dp"
-            android:layout_height="55dp"
-            android:layout_gravity="center_vertical"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="bottom"
             android:adjustViewBounds="true"
             android:background="@android:color/transparent"
-            android:layout_marginTop="10dp"
+            android:layout_margin="15dp"
+            android:layout_marginRight="15dp"
             android:padding="0dp"
             android:scaleType="fitCenter"
             android:src="@drawable/button_hospital" />
 
         <ImageButton
             android:id="@+id/medical"
-            android:layout_width="55dp"
-            android:layout_height="55dp"
-            android:layout_gravity="center_vertical"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="bottom"
             android:adjustViewBounds="true"
             android:background="@android:color/transparent"
-            android:layout_marginTop="10dp"
+            android:layout_margin="15dp"
+            android:layout_marginRight="15dp"
             android:padding="0dp"
             android:scaleType="fitCenter"
             android:layout_below="@+id/hospital"
@@ -45,12 +47,12 @@
 
         <ImageButton
             android:id="@+id/burial"
-            android:layout_width="55dp"
-            android:layout_height="55dp"
-            android:layout_gravity="center_vertical"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="bottom"
             android:adjustViewBounds="true"
             android:background="@android:color/transparent"
-            android:layout_marginTop="10dp"
+            android:layout_margin="15dp"
             android:padding="0dp"
             android:scaleType="fitStart"
             android:layout_below="@+id/medical"
@@ -58,31 +60,34 @@
 
         <ImageButton
             android:id="@+id/petshop"
-            android:layout_width="55dp"
-            android:layout_height="55dp"
-            android:layout_gravity="center_vertical"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="bottom"
             android:layout_below="@+id/burial"
             android:adjustViewBounds="true"
             android:background="@android:color/transparent"
-            android:layout_marginTop="10dp"
+            android:layout_margin="15dp"
+            android:layout_marginLeft="15dp"
             android:padding="0dp"
             android:scaleType="fitStart"
             android:src="@drawable/button_petshop" />
 
         <ImageButton
             android:id="@+id/shelter"
-            android:layout_width="55dp"
-            android:layout_height="55dp"
-            android:layout_gravity="center_horizontal"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="bottom"
             android:adjustViewBounds="true"
             android:background="@android:color/transparent"
-            android:layout_marginTop="10dp"
+            android:layout_margin="15dp"
+            android:layout_marginLeft="15dp"
             android:padding="0dp"
             android:scaleType="fitStart"
             android:layout_below="@id/petshop"
             android:src="@drawable/button_shelter" />
 
-    </RelativeLayout>
+    </LinearLayout>
+
     <!--
         <androidx.cardview.widget.CardView
             xmlns:card_view="http://schemas.android.com/apk/res-auto"
