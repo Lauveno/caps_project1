@@ -30,14 +30,11 @@ import static android.content.Context.MODE_NO_LOCALIZED_COLLATORS;
 public class fragment_mypage_3 extends Fragment {
     private Context mContext;
 
-    MaterialCalendarView calendarView;
-
     DatePicker datePicker; // 날짜를 선택
-    TextView viewDatePick; // 선택한 날짜를 보여줌
+    TextView viewDate; // 선택한 날짜를 보여줌
     EditText editDiary;     // 선택한 날짜의 일기를 쓴다, 저장된 일기가 있다면 보여준다
     Button btn_save; // 선택한 날짜의 일기 저장, 수정
     String fileName; // 선택된 날짜의 파일 이름
-
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -56,14 +53,14 @@ public class fragment_mypage_3 extends Fragment {
         View view = inflater.inflate(R.layout.fragment_mypage_3, container, false);
 
         datePicker = view.findViewById(R.id.datePicker);
-        viewDatePick = view.findViewById(R.id.viewDatePick);
+        viewDate = view.findViewById(R.id.viewDatePick);
         editDiary = view.findViewById(R.id.editDiary);
         btn_save = view.findViewById(R.id.btn_save);
         
         // 오늘 날짜 받아오기
         Calendar cal = Calendar.getInstance();
         int calYear = cal.get(Calendar.YEAR);
-        int calMonth = cal.get(Calendar.MONTH) + 1;
+        int calMonth = (cal.get(Calendar.MONTH) + 1);
         int calDay = cal.get(Calendar.DAY_OF_MONTH);
         
         // 시작 : 오늘 날짜 
@@ -102,7 +99,7 @@ public class fragment_mypage_3 extends Fragment {
 
             fos.write(content.getBytes());
             fos.close();
-            Toast.makeText(mContext, "저장되었습니다.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(mContext, fileName + "이 저장되었습니다.", Toast.LENGTH_SHORT).show();
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -116,29 +113,28 @@ public class fragment_mypage_3 extends Fragment {
     private void checkedDay(int year, int monthOfYear, int dayOfMonth) {
 
         // 선택한 날짜 보여주기
-        viewDatePick.setText(year + " - " + monthOfYear + " - " + dayOfMonth);
+        viewDate.setText("일기");
 
         // 파일 이름
-        fileName = year + "" + monthOfYear + "" + dayOfMonth + ".txt";
+        fileName = year + "" + (monthOfYear+1) + "" + dayOfMonth + ".txt";
 
 
         FileInputStream fm = null;
 
         try {
             fm = mContext.openFileInput(fileName);
-            byte[] fileData = new byte[fm.available()];
-            fm.read(fileData); // fileData 읽음
+            byte[] txt = new byte[fm.available()];
+            fm.read(txt); // data 읽음
             fm.close();
 
-            String str = new String(fileData, "UTF-8");
+            String str = new String(txt, "UTF-8").trim();
 
             editDiary.setText(str);
             btn_save.setText("수정하기");
         } catch (Exception e) {
-
 //            Toast.makeText(mContext, "저장된 글이 없습니다.", Toast.LENGTH_SHORT).show();
-            editDiary.setText("");
-            btn_save.setText("새 글 저장");
+            editDiary.setHint("일기 없음");
+            btn_save.setText("새로저장");
             e.printStackTrace();
         }
 

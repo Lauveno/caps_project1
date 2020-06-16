@@ -85,7 +85,7 @@ public class fragment_mypage_1 extends Fragment {
 
     private int id_view;
     private ImageView iv_profile;
-    private TextView tv_userName, petName;
+    private TextView tv_userName, tv_userEmail;
 
     private Context mContext;
 
@@ -130,20 +130,23 @@ public class fragment_mypage_1 extends Fragment {
         DatabaseReference myRootRef = FirebaseDatabase.getInstance().getReference();
 
 
-        // 수정해야함
-        mDBReference = myRootRef.child("users").child("uid");
+
+        mDBReference = myRootRef.child("New_users").child("uid");
         user = FirebaseAuth.getInstance().getCurrentUser();
 
 
         iv_profile = view.findViewById(R.id.iv_profile);
         tv_userName = view.findViewById(R.id.userName);
+        tv_userEmail = view.findViewById(R.id.userEmail);
 
 
         if (user != null) {
             for (UserInfo profile : user.getProviderData()) {
                 String name = profile.getDisplayName();
+                String email = profile.getEmail();
 
                 tv_userName.setText(name);
+                tv_userEmail.setText(email);
 
             }
         }

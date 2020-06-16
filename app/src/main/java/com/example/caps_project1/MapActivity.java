@@ -117,8 +117,8 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
             public void onClick(View v) {
                 switch (v.getId()) {
                     case R.id.hospital:
- //                       Intent intent = new Intent(MapActivity.this, PharmParser_hospital.class);
- //                       startActivityForResult(intent, );
+                        //                       Intent intent = new Intent(MapActivity.this, PharmParser_hospital.class);
+                        //                       startActivityForResult(intent, );
                         break;
                     case R.id.medical:
                         break;
@@ -367,7 +367,7 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
 
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLng(currentLatLng);
         mMap.moveCamera(cameraUpdate);
-        }
+    }
 
 
     private void getDeviceLocation() {

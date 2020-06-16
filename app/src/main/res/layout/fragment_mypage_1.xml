@@ -76,7 +76,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center"
-                        android:layout_marginTop="240dp">
+                        android:layout_marginTop="240dp"
+                        android:orientation="vertical">
                         <TextView
                             android:id="@+id/userName"
                             android:layout_width="wrap_content"
@@ -86,6 +87,17 @@
                             android:textStyle="bold"
                             android:textSize="17sp"
                             android:fontFamily="@font/app_main_font"
+                            />
+                        <TextView
+                            android:id="@+id/userEmail"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+
+                            android:hint="test@test.com"
+                            android:textStyle="bold"
+                            android:textSize="17sp"
+                            android:fontFamily="@font/app_main_font"
+                            android:layout_marginTop="5dp"
                             />
                     </LinearLayout>
 
