@@ -22,6 +22,14 @@
         android:padding="10dp">
 
         <EditText
+            android:id="@+id/nameEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:ems="10"
+            android:hint="이름"
+            android:inputType="textPersonName|text" />
+        <EditText
             android:id="@+id/petNameEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
