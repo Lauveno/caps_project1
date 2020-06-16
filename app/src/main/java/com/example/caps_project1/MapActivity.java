@@ -46,6 +46,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
@@ -61,7 +62,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-public class MapActivity extends Fragment implements OnMapReadyCallback {
+public class MapActivity extends Fragment implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
     private FragmentActivity mContext;
     private Context context;
 
@@ -101,6 +102,7 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
     }
 
     //  여기부터
@@ -178,7 +180,7 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        googleMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
+        mMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
             @Override
             public void onMapLoaded() {
                 Log.d(TAG, "Loading");
@@ -192,10 +194,26 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
             }
         });
 
-        MarkerOptions markerOptions = new MarkerOptions();
-        markerOptions.position(new LatLng(127.1060997, 37.3040954))
-                .title("해피동물병원").snippet("경기도 용인시 기흥구 보정동 700-7번지").snippet("287-7275").snippet("정상");
-        mMap.addMarker(markerOptions);
+
+        MarkerOptions marker = new MarkerOptions();
+        // 단국대학교
+//        marker.position(new LatLng(37.3215984, 127.1267503))
+//                .title("단국대학교 죽전캠퍼스")
+//                .snippet("경기도 용인시 수지구 죽전로 152");
+        // 해피동물병원
+        marker.position(new LatLng(37.3041347, 127.1061582))
+                .title("해피동물병원")
+                .snippet("경기도 용인시 기흥구 보정동 700-6번지");
+        mMap.addMarker(marker).showInfoWindow();
+
+        mMap.setOnMarkerClickListener(this);
+    }
+
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        // Snackbar.make(mapView, marker.getTitle() + "    ☎ 1899 - 3700", Snackbar.LENGTH_INDEFINITE).show();
+        Snackbar.make(mapView, marker.getTitle() + "    ☎ 031-287-7275", Snackbar.LENGTH_INDEFINITE).show();
+        return false;
     }
 /*
     private Marker addMarker(PharmDTO_object pharmDTO_object) {
@@ -441,4 +459,5 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
         super.onDestroy();
         mapView.onDestroy();
     }
+
 }
