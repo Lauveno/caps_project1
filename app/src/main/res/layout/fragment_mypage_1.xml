@@ -40,8 +40,8 @@
                     android:textStyle="bold" />
 
                 <androidx.cardview.widget.CardView
-                    android:layout_width="150dp"
-                    android:layout_height="150dp"
+                    android:layout_width="130dp"
+                    android:layout_height="130dp"
                     app:cardCornerRadius="75dp"
                     app:cardElevation="10dp"
                     android:layout_centerInParent="true"
