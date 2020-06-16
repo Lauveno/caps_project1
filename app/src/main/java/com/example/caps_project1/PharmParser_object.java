@@ -94,7 +94,6 @@ public class PharmParser_object{
     {
         try{
             StringBuffer content = new StringBuffer();
-
             /////////////////////// 아래 경로는 안드로이드 경로로
             String path = String.format("/app/src/main/assets/%s.json", this.Place);
             File file = new File(path);

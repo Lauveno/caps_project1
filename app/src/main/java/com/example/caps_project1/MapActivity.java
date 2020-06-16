@@ -65,7 +65,7 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
     private FragmentActivity mContext;
     private Context context;
 
-    public PharmParser_object pharmParser_object;
+    public MarkerOptions markerOptions;
 
     private static final String TAG = MapActivity.class.getSimpleName();
     private GoogleMap mMap;
@@ -101,7 +101,6 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
     //  여기부터
@@ -121,7 +120,7 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
             mapView.onCreate(savedInstanceState);
         }
         mapView.getMapAsync(this);
-
+/*
         ViewGroup viewGroup = (ViewGroup) inflater.inflate(R.layout.activity_map, container, false);
 
         ImageButton hospital = viewGroup.findViewById(R.id.hospital);
@@ -130,9 +129,9 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
             public void onClick(View v) {
                 PharmParser_object pharmParser_object = new PharmParser_object("hospital", "용인시");
 
-                ArrayList<PharmDTO_object> pharmDTO_objects = pharmParser_object.FileOpen();
+                ArrayList<PharmDTO_object> pharmDTO_objects_hospital = pharmParser_object.FileOpen();
 
-                for (PharmDTO_object location : pharmDTO_objects) {
+                for (PharmDTO_object location : pharmDTO_objects_hospital) {
                     MarkerOptions markerOptions = new MarkerOptions();
                     LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
                     markerOptions.position(latLng);
@@ -141,9 +140,10 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
                 }
             }
         });
-
+*/
         return layout;
     }
+
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -178,23 +178,44 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        setDefaultLocation(); // GPS를 찾지 못하는 장소에 있을 경우 지도의 초기 위치가 필요함.
+        googleMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
+            @Override
+            public void onMapLoaded() {
+                Log.d(TAG, "Loading");
+                setDefaultLocation(); // GPS를 찾지 못하는 장소에 있을 경우 지도의 초기 위치가 필요함.
 
-        getLocationPermission();
+                getLocationPermission();
 
-        updateLocationUI();
+                updateLocationUI();
 
-        getDeviceLocation();
+                getDeviceLocation();
+            }
+        });
 
-    /*    //마커생성
-        for(int i=0; i<arrayList.size(); i++) {
-            Location location = addrToPoint(context, arrayList.get(i).getAddress());
-            LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-            MarkerOptions markerOptions = new MarkerOptions();
-            markerOptions.position(latLng);
-            Marker marker = mMap.addMarker(markerOptions);
-        }*/
+        MarkerOptions markerOptions = new MarkerOptions();
+        markerOptions.position(new LatLng(127.1060997, 37.3040954))
+                .title("해피동물병원").snippet("경기도 용인시 기흥구 보정동 700-7번지").snippet("287-7275").snippet("정상");
+        mMap.addMarker(markerOptions);
     }
+/*
+    private Marker addMarker(PharmDTO_object pharmDTO_object) {
+        LatLng location = new LatLng(pharmDTO_object.getLatitude(), pharmDTO_object.getLongitude());
+        String locality = pharmDTO_object.getLocality();
+        String name = pharmDTO_object.getName();
+        String address = pharmDTO_object.getAddress();
+        String number = pharmDTO_object.getNumber();
+        String state = pharmDTO_object.getState();
+
+        MarkerOptions markerOptions = new MarkerOptions();
+        markerOptions.title(locality);
+        markerOptions.title(name);
+        markerOptions.title(address);
+        markerOptions.title(number);
+        markerOptions.title(state);
+        markerOptions.position(location);
+
+        return mMap.addMarker(markerOptions);
+    } */
 /*
     public static Location addrToPoint(Context context, String address) {
         Location location = new Location("");
@@ -209,9 +230,7 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
         }
         return location;
     }
-
- */
-
+*/
     private void updateLocationUI() {
         if (mMap == null) {
             return;
@@ -241,9 +260,6 @@ public class MapActivity extends Fragment implements OnMapReadyCallback {
         markerOptions.draggable(true);
         markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
         currentMarker = mMap.addMarker(markerOptions);
-
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(mDefaultLocation, 15);
-        mMap.moveCamera(cameraUpdate);
     }
 
     String getCurrentAddress(LatLng latlng) {
