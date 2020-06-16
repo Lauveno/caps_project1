@@ -37,18 +37,19 @@ public class MemberInitActivity extends AppCompatActivity {
 
 
     private void profileUpdate() {
+        String name = ((EditText) findViewById(R.id.nameEditText)).getText().toString();
         String pet = ((EditText) findViewById(R.id.petNameEditText)).getText().toString();
         String gender = ((EditText) findViewById(R.id.genderEditText)).getText().toString();
         String birth = ((EditText) findViewById(R.id.birthEditText)).getText().toString();
         String address = ((EditText) findViewById(R.id.addressEditText)).getText().toString();
 
 
-            if (gender.length() > 0 && birth.length() > 5 && address.length() > 0
+            if (name.length() > 1 && gender.length() > 0 && birth.length() > 5 && address.length() > 0
                     && pet.length() > 0) {
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                 FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-                UserInfomation userInfo = new UserInfomation(pet, gender, birth, address);
+                UserInfomation userInfo = new UserInfomation(name, pet, gender, birth, address);
 
                 if (user != null) {
                     db.collection("users").document(user.getUid()).set(userInfo)
