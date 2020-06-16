@@ -164,28 +164,6 @@ public class BoardActivity extends Fragment {
         @Override
         protected ArrayList<Board> doInBackground(Void... voids) {
             try {
-                //database 게시글 가져와야 함
-//                db = FirebaseFirestore.getInstance();
-//                db.collection("posts")
-//                        .get()
-//                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-//                            @Override
-//                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-//                                if (task.isSuccessful()) {
-//                                    for (QueryDocumentSnapshot document : task.getResult()) {
-//                                        Log.d("result : ", document.getId() + " => " + document.getData());
-//                                        Log.d("result : ", document.getId() + " => " + document.getData().get("title"));
-//                                        String title = document.getData().get("title").toString();
-//                                        String content = document.getData().get("contents").toString();
-//                                        String publisher = document.getData().get("publisher").toString();
-//                                        Log.d("result : ", document.getId() + " => " + title);
-//                                        mDataset.add(new Board(title,content, publisher));
-//                                    }
-//                                } else {
-//                                    Log.w("result : ", "Error getting documents.", task.getException());
-//                                }
-//                            }
-//                        });
 
             }catch (Exception e){
                 e.printStackTrace();
